@@ -33,7 +33,8 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
         i++;
     }
 
-    //Se muestra por pantalla los datos
+    /*
+    //Solo para ver si saca bien los datos del archivo
     printf("El archivo contiene:\n");
     i=0;
     while(i<cantidadDeParticulas){
@@ -41,6 +42,7 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
         i++;
     }
     printf("\n\n");
+    */
 
     //Cerrar archivo
     fclose(file);

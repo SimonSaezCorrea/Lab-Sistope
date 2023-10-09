@@ -60,6 +60,19 @@ int main(int argc, char *argv[]){
     printf("-----------------\n");
     int**particulas = lecturaArchivoEntrada(nombreArchivoEntrada, &cantidad);
 
+    float *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad);
+
+    /*
+    //Solo para ver que esté bien los resultados
+    printf("---------\n");
+    int probar=0;
+    while(probar<numeroCelda){
+        printf("%f\n", salida[probar]);
+        probar++;
+    }
+    printf("---------\n");
+    */
+
     if(flag==1){
         printf("Se muestra por pantalla N = %d, cantidad = %d\n", numeroCelda, cantidad);
     }
@@ -71,6 +84,7 @@ int main(int argc, char *argv[]){
         q++;
     }
     free(particulas);
+    free(salida);
     printf("Memoria liberada\n----------\n");
     return 0;
 }

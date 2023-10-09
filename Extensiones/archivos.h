@@ -7,10 +7,11 @@
 #define LOCATE "Ejemplos/"
 
 /*
-Entrada: El nombre del archivo con las particulas y la variable en la que
-se almacenará el dato de cantidad de particulas
+Entrada: char  *nameFile: El nombre del archivo con las particulas
+         int *cantidad: la variable en la que se almacenará el dato 
+                        de cantidad de particulas
 
-Salida: Una lista de Particulas
+Salida: int**: Una lista de Particulas
 
 Descripción: Se retornará una lista de particulas en la cual contendrá, 
 para cada particula, su impacto y energía. Además se almacenará el valor 
