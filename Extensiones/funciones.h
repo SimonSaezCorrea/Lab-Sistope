@@ -17,7 +17,7 @@ Descripción: Calculara la energía acumulada para la casilla, esta
              energía se calcula mediante una formula para el
              cálculo de Eij
 */
-float calculoEnergiaAcumulada(float Ei, int Ej, int j, int i, int N);
+double calculoEnergiaAcumulada(double Ei, int Ej, int j, int i, int N);
 
 /*
 Entrada: float *arregloJoule: El arreglo que contiene la energía
@@ -29,7 +29,7 @@ Salida: void: nada
 
 Descripción: Calcula la energía hacia la derecha del arregloJoule
 */
-void calculoDerecho(float *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto);
+void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto);
 
 /*
 Entrada: float *arregloJoule: El arreglo que contiene la energía
@@ -41,7 +41,7 @@ Salida: void: nada
 
 Descripción: Calcula la energía hacia la izquierda del arregloJoule
 */
-void calculoIzquierdo(float *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto);
+void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto);
 
 /*
 Entrada: int numeroDeCeldas: La cantidad de celdas
@@ -54,7 +54,7 @@ Salida: float: retorna una lista que contiene la energía depositada por los
 Descripción: Permite calcular la enería de impacto en cada posición y como
              se distribuye en el material
 */
-float *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadParticulas);
+double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadParticulas);
 
 
 #endif

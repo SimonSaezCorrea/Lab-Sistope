@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
     printf("-----------------\n");
     int**particulas = lecturaArchivoEntrada(nombreArchivoEntrada, &cantidad);
 
-    float *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad);
+    double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad);
 
     /*
     //Solo para ver que esté bien los resultados
