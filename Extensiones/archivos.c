@@ -38,7 +38,7 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     printf("El archivo contiene:\n");
     i=0;
     while(i<cantidadDeParticulas){
-        printf("%d  %d\n", listaParticulas[i][0], listaParticulas[i][1]);
+        printf("%d  %d\n",listaParticulas[i][0], listaParticulas[i][1]);
         i++;
     }
     printf("\n\n");
@@ -53,3 +53,31 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     // Retorno la lista de particulas
     return listaParticulas;
 }
+
+void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo){
+    char direccionReal[100] = "";
+    strcat(direccionReal, LOCATE);
+    strcat(direccionReal, nameFile);
+
+    
+    FILE * file = fopen(direccionReal, "w");
+
+    
+    if(file==NULL){
+        printf("Error al abrir el archivo\n");
+        exit(1);
+    }
+    //printf("%f\n",energias[0]);
+    //printf("Se intenta imprimir: %d\t%lf\n",posMaximo,maximo);
+    fprintf(file,"%d %lf\n",posMaximo,maximo);
+    /*
+    int i = 0;
+    while (i < numEnergias){
+        //printf("Se intenta imprimir:%d\t%f\n",i,energias[i]);
+        fprintf(file,"%d %lf\n",i,energias[i]);
+        i++;
+    }
+    */
+    fclose(file);
+}
+

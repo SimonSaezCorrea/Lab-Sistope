@@ -19,4 +19,7 @@ de la cantidad de particulass en la variable "*cantidad"
 */
 int **lecturaArchivoEntrada(char *nameFile, int *cantidad);
 
+
+void escribirArchivoSalida(char* nameFile,double *energias, int numEnergias,double maximo, int posMaximo);
+
 #endif

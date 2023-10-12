@@ -5,6 +5,7 @@
 #include "Extensiones/archivos.h"
 #include "Extensiones/funciones.h"
 
+
 int main(int argc, char *argv[]){
     int numeroCelda = 0; //Variable para la cantidad de celdas
     int obligatorioEntradaNumeroCelda = 0; //Verificar que exista una entrada -N
@@ -57,34 +58,57 @@ int main(int argc, char *argv[]){
         return 1;
     }
     int cantidad=0;
+    double maximo = 0;
+    int pos = 0; 
     printf("-----------------\n");
     int**particulas = lecturaArchivoEntrada(nombreArchivoEntrada, &cantidad);
 
-    double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad);
-
-    /*
+    double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad,&maximo,&pos);
+    printf("\nMaximo: %f -- Posicion: %d\n", maximo, pos);
+    escribirArchivoSalida(nombreArchivoSalida,salida,numeroCelda,maximo,pos);
+    
     //Solo para ver que esté bien los resultados
+
+    
     printf("---------\n");
     int probar=0;
     while(probar<numeroCelda){
-        printf("%f\n", salida[probar]);
+        printf("%d) %f\n", probar +1,salida[probar]);
         probar++;
     }
     printf("---------\n");
-    */
+    
 
     if(flag==1){
         printf("Se muestra por pantalla N = %d, cantidad = %d\n", numeroCelda, cantidad);
     }
+    //double a = 3.5, b = 3.4;
+    //int c = (int) (a + 0.6), d = (int) b;
+    
+    
+    double max = maximo;
+    
+    mostrarGrafica(salida,numeroCelda,maximo);
+
+    
 
     printf("----------\nLiberando Memoria\n");
     int q=0;
     while(q<cantidad){
+        
+        
         free(particulas[q]);
         q++;
     }
     free(particulas);
+    
     free(salida);
     printf("Memoria liberada\n----------\n");
+
+    
+
+    
+
+    
     return 0;
 }
