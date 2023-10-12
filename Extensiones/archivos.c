@@ -57,26 +57,31 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
 }
 
 void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo){
+     //Establecer lugar en el que se crea/modifica el archivo
     char direccionReal[100] = "";
     strcat(direccionReal, LOCATE);
     strcat(direccionReal, nameFile);
 
+    //Abrir el archivo
     FILE * file = fopen(direccionReal, "w");
 
-    
+    //Se comprueba si se abrio correctamente el archivo
     if(file==NULL){
         printf("Error al abrir el archivo\n");
         exit(1);
     }
+    //Se imprime en el archivo la posición de celda con la maxima energia seguida por dicha energia
+    fprintf(file,"%d\t%lf\n",posMaximo,maximo);
 
-    fprintf(file,"%d %lf\n",posMaximo,maximo);
 
+    //Se usa un ciclo while para imprimir en el archivo las posiciones de celdas en orden con sus respectivas energias
     int i = 0;
     while (i < numEnergias){
-        fprintf(file,"%d %lf\n",i,energias[i]);
+        fprintf(file,"%d\t%lf\n",i,energias[i]);
         i++;
     }
     
+    //Se cierra el archivo
     fclose(file);
 }
 

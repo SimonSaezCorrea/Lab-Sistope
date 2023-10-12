@@ -18,6 +18,21 @@ de la cantidad de particulass en la variable "*cantidad"
 int **lecturaArchivoEntrada(char *nameFile, int *cantidad);
 
 
+
+
+/*
+Entrada: char  *nameFile: El nombre del archivo en es que se va a escribir las energias
+         double *energias: La lista que contiene las energias por ser escritas en el archivo
+         int numEnergias: El numero de energias por ser escritas en el archivo
+         double maximo: La maxima energia que va a ser escrita en primer lugar en el archivo
+         int posMaximo: La poscion de la celda con la maxima energia que va a ser escrita en primer lugar en el archivo 
+
+Salida: void: sin salida.
+
+Descripción: Se escribe un archivo de salida cuya primera linea es la posición de la celda con la maxima energia acumulada 
+seguida por la misma energia maxima acumulada, a continuacion las siguientes linas son un listado descendente de las posiciones
+de celdas con su respectiva energia acumulada. 
+*/
 void escribirArchivoSalida(char* nameFile,double *energias, int numEnergias,double maximo, int posMaximo);
 
 #endif
