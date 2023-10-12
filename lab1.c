@@ -7,7 +7,7 @@
 
 
 int main(int argc, char *argv[]){
-    int numeroCelda = 0; //Variable para la cantidad de celdas
+    int numeroCelda = -1; //Variable para la cantidad de celdas
     int obligatorioEntradaNumeroCelda = 0; //Verificar que exista una entrada -N
 
     char nombreArchivoEntrada[100]; //Variable para el archivo de entrada
@@ -21,10 +21,16 @@ int main(int argc, char *argv[]){
     //Comienza el uso de getopt
     int option;
     while((option = getopt(argc, argv, "N:i:o:D"))!=-1){
-        switch (option)
-        {
+        switch (option){
         case 'N':
-            numeroCelda = atoi(optarg);
+            if(sscanf(optarg, "%d", &numeroCelda) != 1){
+                printf("El valor proporcionado para -N no es un número válido.\n");
+                return 1;
+            }
+            if(numeroCelda<=0){
+                printf("El valor proporcionado para -N no es un número válido.\n");
+                return 1;
+            }
             obligatorioEntradaNumeroCelda = 1;
             break;
         
@@ -41,6 +47,10 @@ int main(int argc, char *argv[]){
         case 'D':
             flag = 1;
             break;
+            
+        default:
+            printf("Opción no reconocida\n");
+            return 1;
         }
     }
 
@@ -60,16 +70,14 @@ int main(int argc, char *argv[]){
     int cantidad=0;
     double maximo = 0;
     int pos = 0; 
-    printf("-----------------\n");
+    //printf("-----------------\n");
     int**particulas = lecturaArchivoEntrada(nombreArchivoEntrada, &cantidad);
 
     double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad,&maximo,&pos);
-    printf("\nMaximo: %f -- Posicion: %d\n", maximo, pos);
-    escribirArchivoSalida(nombreArchivoSalida,salida,numeroCelda,maximo,pos);
     
+    /*
     //Solo para ver que esté bien los resultados
-
-    
+    printf("\nMaximo: %f -- Posicion: %d\n", maximo, pos);
     printf("---------\n");
     int probar=0;
     while(probar<numeroCelda){
@@ -77,19 +85,12 @@ int main(int argc, char *argv[]){
         probar++;
     }
     printf("---------\n");
-    
+    */
 
     if(flag==1){
-        printf("Se muestra por pantalla N = %d, cantidad = %d\n", numeroCelda, cantidad);
+        mostrarGrafica(salida,numeroCelda,maximo);
     }
-    //double a = 3.5, b = 3.4;
-    //int c = (int) (a + 0.6), d = (int) b;
-    
-    
-    double max = maximo;
-    
-    mostrarGrafica(salida,numeroCelda,maximo);
-
+    escribirArchivoSalida(nombreArchivoSalida,salida,numeroCelda,maximo,pos);
     
 
     printf("----------\nLiberando Memoria\n");
@@ -105,10 +106,5 @@ int main(int argc, char *argv[]){
     free(salida);
     printf("Memoria liberada\n----------\n");
 
-    
-
-    
-
-    
     return 0;
 }

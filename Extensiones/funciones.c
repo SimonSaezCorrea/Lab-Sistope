@@ -29,7 +29,7 @@ void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpact
 
 void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto,  double *maximo, int *pos){
     int i = posicionImpacto - 1;
-    if(i > numeroDeCeldas){
+    if(i >= numeroDeCeldas){
         i = numeroDeCeldas - 1;
     }
     while (i >= 0){
@@ -39,7 +39,7 @@ void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpa
 }
 
 double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadParticulas ,double *maximo, int *pos){
-    double *arregloJoule = calloc(numeroDeCeldas, sizeof(float));
+    double *arregloJoule = calloc(numeroDeCeldas, sizeof(double));
     int i = 0;
     while(i < cantidadParticulas){
         int posicion = listaParticulas[i][0];

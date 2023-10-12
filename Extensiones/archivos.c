@@ -1,5 +1,7 @@
 #include "archivos.h"
 
+#define LOCATE "Ejemplos/"
+
 int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     //Establecer lugar en el que se encuentro los archivos
     char direccionReal[100] = "";
@@ -20,10 +22,10 @@ int **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     fscanf(file, "%d\n", &cantidadDeParticulas);
 
     //Generar el arreglo dinámico el cual permita almacenar eñ impacto y la energía
-    int **listaParticulas = malloc(sizeof(int*)*cantidadDeParticulas);
+    int **listaParticulas = calloc(cantidadDeParticulas, sizeof(int*));
     int i = 0;
     while(i < cantidadDeParticulas){
-        listaParticulas[i] = malloc(sizeof(int)*2);
+        listaParticulas[i] = calloc(2, sizeof(int));
         i++;
     }
 
@@ -59,7 +61,6 @@ void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,doub
     strcat(direccionReal, LOCATE);
     strcat(direccionReal, nameFile);
 
-    
     FILE * file = fopen(direccionReal, "w");
 
     
@@ -67,17 +68,15 @@ void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,doub
         printf("Error al abrir el archivo\n");
         exit(1);
     }
-    //printf("%f\n",energias[0]);
-    //printf("Se intenta imprimir: %d\t%lf\n",posMaximo,maximo);
+
     fprintf(file,"%d %lf\n",posMaximo,maximo);
-    /*
+
     int i = 0;
     while (i < numEnergias){
-        //printf("Se intenta imprimir:%d\t%f\n",i,energias[i]);
         fprintf(file,"%d %lf\n",i,energias[i]);
         i++;
     }
-    */
+    
     fclose(file);
 }
 

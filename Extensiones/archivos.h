@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LOCATE "Ejemplos/"
-
 /*
 Entrada: char  *nameFile: El nombre del archivo con las particulas
          int *cantidad: la variable en la que se almacenará el dato 

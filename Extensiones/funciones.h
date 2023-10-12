@@ -71,6 +71,7 @@ int porcentajeR3(double energiaPos,double maximo);
 
 void representarEnegia(int pos,double energia, int porEnergia);
 
+
 void mostrarGrafica(double *energias, int numEnergias ,double maximo);
 
 #endif
