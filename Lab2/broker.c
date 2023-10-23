@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc, char *argv[]){
+
+    printf("archivo:%s  Celda:%s    Worker:%s   ArchivoEntrada:%s   ArchivoSalida:%s    flag=%s\n", argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+    
+    int numCelda = atoi(argv[1]);
+    int numWorker = atoi(argv[2]);
+    char ArchivoEntrada[100];
+    strcpy(ArchivoEntrada, argv[3]);
+    char ArchivoSalida[100];
+    strcpy(ArchivoSalida, argv[4]);
+    int flag = atoi(argv[5]);
+
+    printf("archivo:%s  Celda:%d    Worker:%d   ArchivoEntrada:%s   ArchivoSalida:%s    flag=%d\n", argv[0], numCelda, numWorker, ArchivoEntrada, ArchivoSalida, flag);
+
+    int pid=-1;
+
+    int i = 0;
+    while(pid!=0 && i < numCelda){
+        printf("mi pid=%d   i=%d\n", getpid(), i);
+        pid=fork();
+        i++;
+    }
+    if(pid==0){
+        printf("Soy un Hijo\n");
+    }
+    return 0;
+}
