@@ -5,7 +5,7 @@
 #include <string.h>
 
 /*
-Entrada: char  *nameFile: El nombre del archivo con las particulas
+Entrada: char *nameFile: El nombre del archivo con las particulas
          int *cantidad: la variable en la que se almacenará el dato 
                         de cantidad de particulas
 

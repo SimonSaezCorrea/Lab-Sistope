@@ -4,3 +4,7 @@ lab1
 *.o
 
 .vscode/
+
+Lab2/broker
+
+Lab2/worker

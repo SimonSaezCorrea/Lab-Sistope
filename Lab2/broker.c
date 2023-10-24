@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include "Extensiones/listas.h"
+
 
 int main(int argc, char *argv[]){
 
@@ -16,16 +19,27 @@ int main(int argc, char *argv[]){
 
     printf("archivo:%s  Celda:%d    Worker:%d   ArchivoEntrada:%s   ArchivoSalida:%s    flag=%d\n", argv[0], numCelda, numWorker, ArchivoEntrada, ArchivoSalida, flag);
 
+    int i = 0;
+    pipeline *P = malloc(sizeof(pipeline));
+    while(i<numWorker){
+        add(P);
+        i++;
+    }
+
+    show(P);
+
     int pid=-1;
 
-    int i = 0;
-    while(pid!=0 && i < numCelda){
-        printf("mi pid=%d   i=%d\n", getpid(), i);
+    i = 0;
+    while(pid!=0 && i < numWorker){
+        printf("mi pid=%d y soy el padre      i=%d\n", getpid(), i);
         pid=fork();
         i++;
     }
     if(pid==0){
         printf("Soy un Hijo\n");
+    }else{
+        liberar(P);
     }
     return 0;
 }

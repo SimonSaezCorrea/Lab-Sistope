@@ -3,8 +3,6 @@
 #include <string.h>
 #include <getopt.h>
 #include <unistd.h>
-#include "Extensiones/archivos.h"
-#include "Extensiones/funciones.h"
 
 int main(int argc, char *argv[]){
     char numeroCeldaString[4];             // Variable para la cantidad de celdas
@@ -86,6 +84,7 @@ int main(int argc, char *argv[]){
     }
     //En caso de ser el Padre
     else{
+        /*
         int numeroCelda = atoi(numeroCeldaString);
 
         int cantidad = 0;
@@ -96,7 +95,7 @@ int main(int argc, char *argv[]){
 
         double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad, &maximo, &pos);
 
-        /*
+        
         //Solo para ver que esté bien los resultados
         printf("\nMaximo: %f -- Posicion: %d\n", maximo, pos);
         printf("---------\n");
@@ -106,7 +105,7 @@ int main(int argc, char *argv[]){
             probar++;
         }
         printf("---------\n");
-        */
+        
 
         if (strcmp(flag, "1") == 0){
             mostrarGrafica(salida, numeroCelda, maximo);
@@ -124,6 +123,7 @@ int main(int argc, char *argv[]){
 
         free(salida);
         printf("Memoria liberada\n----------\n");
+        */
     }
     return 0;
 }
