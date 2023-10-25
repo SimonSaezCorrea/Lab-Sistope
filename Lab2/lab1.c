@@ -17,11 +17,14 @@ int main(int argc, char *argv[]){
     char nombreArchivoSalida[100];                 // Variable para el archivo de salida
     int obligatorioEntradaNombreArchivoSalida = 0; // Verificar que exista una entrada -o
 
+    char numeroChunk[4];                           //Variable para la cantidad de chunks
+    int obligatorioEntradaNumeroChunk = 0;         //Verificar que existe una entrada -c
+
     char flag[2] = "0"; // Variable para mostrar por pantalla
 
     // Comienza el uso de getopt
     int option;
-    while ((option = getopt(argc, argv, "N:P:i:o:D")) != -1){
+    while ((option = getopt(argc, argv, "N:P:i:o:c:D")) != -1){
         switch (option){
         case 'N':
             strcpy(numeroCeldaString, optarg);
@@ -43,6 +46,10 @@ int main(int argc, char *argv[]){
             obligatorioEntradaNombreArchivoSalida = 1;
             break;
 
+        case 'c':
+            strcpy(numeroChunk, optarg);
+            obligatorioEntradaNumeroChunk = 1;
+            break;
         case 'D':
             strcpy(flag, "1");
             break;
@@ -71,13 +78,18 @@ int main(int argc, char *argv[]){
         return 1;
     }
 
+    else if (obligatorioEntradaNumeroChunk == 0){
+        printf("Requiere el uso de la flag -c y con su cantidad de chunk respectiva\n");
+        return 1;
+    }
+
     int pid;
 
     pid = fork(); // Se genera un Hijo
 
     // En caso de ser el Hijo, ejecutrar el execv
     if (pid == 0){
-        char *argvExec[] = {"./broker", numeroCeldaString, numeroWorker, nombreArchivoEntrada, nombreArchivoSalida, flag, NULL};
+        char *argvExec[] = {"./broker", numeroCeldaString, numeroWorker, nombreArchivoEntrada, nombreArchivoSalida, numeroChunk, flag, NULL};
 
         execv(argvExec[0], argvExec);
         printf("Despues de exec\n");
