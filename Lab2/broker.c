@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "Extensiones/listas.h"
 
 
@@ -24,42 +25,87 @@ int main(int argc, char *argv[]){
     pipeline *P = malloc(sizeof(pipeline));
     while(i<numWorker){
         add(P);
+        
+        
         i++;
+
+
     }
 
     show(P);
 
     int pid=-1;
-    int con = 0;
-    i = 0;
-    while(pid!=0 && i < numWorker){
-        printf("mi pid=%d y soy el padre      i=%d\n", getpid(), i);
-        pid=fork();
-        i++;
-    }
 
+  
 
-    if(pid==0){
-        if(con == 0){
-            close(P->fd[0]);
-
-            dup2(P->fd[1], STDOUT_FILENO); //STDOUT_FILENO se vuelve la copia de fd[1] y fd[1] anterior se cierra.
-            char num1[20];
-            char num2[20];
-            sprintf(num1,"%d",numWorker);
-            sprintf(num2,"%d",chunk);
-            char* argumentos[] = {"./worker", num1,  num2 , NULL};
-            execv(argumentos[0], argumentos);
-            con++;
+   /*
+   Sin lista enlazada
+    int pipefd[numWorker][2];
+    for (int i = 0; i < numWorker; i++) {
+        if (pipe(pipefd[i]) == -1) {
+            perror("Error al crear la tubería");
+            exit(1);
         }
-        printf("Soy un Hijo\n");
-    }else{
-        close(P->fd[1]);
-        char mensaje[100];
-        read(P->fd[0], mensaje, 100);
-        printf("Recibi un mensaje desde worker y es: %s\n", mensaje);
-        
-        liberar(P);
     }
+    */
+
+    for ( i = 0; i < numWorker; i++) {
+        int pid = fork();
+        if (pid == 0) {
+            // Proceso hijo
+            
+            int * descriptor = search(P,i,numWorker);
+            
+            //close(pipefd[i][0]);  // Cerramos el extremo de lectura
+            close(descriptor[0]);
+            
+           
+            //dup2(pipefd[i][1], STDOUT_FILENO);
+            //close(pipefd[i][1]);  
+            dup2(descriptor[1], STDOUT_FILENO); // Redirigimos la salida estándar al extremo de escritura de la tubería
+            close(descriptor[1]); // Cerramos el descriptor de archivo duplicado
+            // Generamos un número aleatorio
+            int numero = i + 1 ;
+
+            // Convertimos el número a una cadena (string)
+            char numero_str[10];
+            snprintf(numero_str, sizeof(numero_str), "%d", numero);
+
+            // Ejecutamos el mismo código con execv
+            char *argumentos[] = {"./worker", numero_str, NULL};
+            execv(argumentos[0], argumentos);
+
+            // En caso de error en execv
+            perror("execv");
+            exit(1);
+        }
+    }
+
+    // Proceso padre
+    for ( i = 0; i < numWorker; i++) {
+        int * descriptor = search(P,i,numWorker);
+        //close(pipefd[i][1]);  // Cerramos el extremo de escritura
+        close(descriptor[1]);
+
+        char buffer[20];
+        //read(pipefd[i][0], buffer, sizeof(buffer));
+        read(descriptor[0], buffer, sizeof(buffer));
+        int numero_recibido = atoi(buffer);
+        printf("Proceso hijo %d envió el número: %d\n", i + 1, numero_recibido);
+
+        //close(pipefd[i][0]);  // Cerramos el extremo de lectura
+        close(descriptor[0]);
+    }
+
+    
+
+    // Esperamos a que todos los hijos terminen
+    for (int i = 0; i < numWorker; i++) {
+        wait(NULL);
+    }
+
     return 0;
 }
+
+
+    
