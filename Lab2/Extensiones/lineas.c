@@ -1,23 +1,19 @@
-#include "listas.h"
+#include "lineas.h"
 
-pipeline *add(pipeline *P){
-    pipeline *aux = P;
+lineas *addLineas(lineas *P, char *linea){
+    lineas *aux = P;
 
     if(aux != NULL){
         while(aux->next!=NULL){
                 aux = aux->next;
         }
-        aux->next = (pipeline *)malloc(sizeof(pipeline));
-        if(pipe(aux->fd)==-1){
-            exit;
-        }
+        aux->next = (lineas *)malloc(sizeof(lineas));
+        strcpy(aux->linea, linea);
         aux->next->next = NULL;
     }
     else{
-        aux = (pipeline *)malloc(sizeof(pipeline));
-        if(pipe(aux->fd)==-1){
-            exit;
-        }
+        aux = (lineas *)malloc(sizeof(lineas));
+        strcpy(aux->linea, linea);
         aux->next = NULL;
         P = aux;
     }
@@ -25,9 +21,9 @@ pipeline *add(pipeline *P){
     return P;
 }
 
-void *liberar(pipeline *P){
-    pipeline *aux = P;
-    pipeline *aux2;
+void *liberarLineas(lineas *P){
+    lineas *aux = P;
+    lineas *aux2;
     while(aux != NULL){
         aux2 = aux->next;
         free(aux);
@@ -35,29 +31,28 @@ void *liberar(pipeline *P){
     }
 }
 
-void show(pipeline *P){
-    pipeline *aux = P;
+void showLineas(lineas *P){
+    lineas *aux = P;
     printf("Descriptor de stdin: %d\n", fileno(stdin));
     printf("Descriptor de stdout: %d\n", fileno(stdout));
     printf("Descriptor de stderr: %d\n", fileno(stderr));
     while(aux->next != NULL){
-        printf("Descriptor de archivo de lectura: %d\n", aux->fd[0]);
-        printf("Descriptor de archivo de escritura: %d\n", aux->fd[1]);
+        printf("Descriptor de archivo de lectura: %d\n", aux->linea);
         printf("----------\n");
         aux = aux->next;
     }
     printf("\n");
 }
 
-int *search(pipeline *P, int position, int len){
-    pipeline *aux = P;
+char *searchLineas(lineas *P, int position, int len){
+    lineas *aux = P;
     if(len > position){
         int i = 0;
         while(i<position){
             aux = aux->next;
             i++;
         }
-        return aux->fd;
+        return aux->linea;
     }else{
         printf("No se puede acceder a esa posición\n");
         return NULL;

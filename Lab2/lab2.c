@@ -3,6 +3,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <unistd.h>
+#include <sys/wait.h>   
 
 int main(int argc, char *argv[]){
     char numeroCeldaString[4];             // Variable para la cantidad de celdas
@@ -50,6 +51,7 @@ int main(int argc, char *argv[]){
             strcpy(numeroChunk, optarg);
             obligatorioEntradaNumeroChunk = 1;
             break;
+            
         case 'D':
             strcpy(flag, "1");
             break;
@@ -96,6 +98,8 @@ int main(int argc, char *argv[]){
     }
     //En caso de ser el Padre
     else{
+        int status;
+        waitpid(pid, &status, 0);
         /*
         int numeroCelda = atoi(numeroCeldaString);
 
