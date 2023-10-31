@@ -6,7 +6,7 @@
 #include "lineas.h"
 
 
-char *lecturaArchivoEntrada(char *nameFile, int *cantidad, int *lineasLeidas, int chunks);
+char **lecturaArchivoEntrada(char *nameFile, int *cantidad);
 
 void procesoChunks(int numWorkers, int workerPipes[][2], char** linea, int numLineas);
 

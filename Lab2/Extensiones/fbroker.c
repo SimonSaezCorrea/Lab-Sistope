@@ -2,7 +2,7 @@
 
 #define LOCATE "Ejemplos/"
 
-char *lecturaArchivoEntrada(char *nameFile, int *cantidad, int *lineasLeidas, int chunks){
+char **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     char direccionReal[100] = "";
     strcat(direccionReal, LOCATE);
     strcat(direccionReal, nameFile);
@@ -15,27 +15,21 @@ char *lecturaArchivoEntrada(char *nameFile, int *cantidad, int *lineasLeidas, in
 
     int cantidadDeParticulas;
     fscanf(file, "%d\n", &cantidadDeParticulas);
+
     *cantidad = cantidadDeParticulas;
 
-    int contadorChunks=0;
-    int contadorLineas=*lineasLeidas;
-    printf("lineas leidas = %d || %d\n", *lineasLeidas, contadorLineas);
+    
     char linea[100];
-    char *lineaConcadenada=malloc(100*sizeof(char));
-    while(contadorLineas<*cantidad){
-        if(contadorChunks>=chunks){
-            break;
-        }
-        fgets(linea, 100, file);
-        printf("%s\n", linea);
-        strcat(lineaConcadenada, linea);
-
-        contadorChunks++;
-        contadorLineas++;
+    char **lineaConcadenada=malloc(cantidadDeParticulas*sizeof(char *));
+    int i;
+    for(i=0;i<cantidadDeParticulas;i++){
+        lineaConcadenada[i]=malloc(100*sizeof(char));
     }
 
-    *lineasLeidas = contadorLineas;
-    printf("lineas leidas = %d || %d\n", *lineasLeidas, contadorLineas);
+    for(i=0;i<cantidadDeParticulas;i++){
+        fgets(linea, 100, file);
+        strcpy(lineaConcadenada[i], linea);
+    }
 
     return lineaConcadenada;
 }
