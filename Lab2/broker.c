@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[]){
     srand(getpid());
-
+    // Guardo los datos que me trae lab2 mediante argumento
     int numCelda = atoi(argv[1]);
     int numWorker = atoi(argv[2]);
     char ArchivoEntrada[100];
@@ -18,27 +18,29 @@ int main(int argc, char *argv[]){
     int chunk = atoi(argv[5]);
     int flag = atoi(argv[6]);
 
-    printf("\narchivoF:%s  CeldaF:%d    WorkerF:%d   ArchivoEntradaF:%s   ArchivoSalidaF:%s    ChunkF:%d    flagF:%d\n", 
-    argv[0], numCelda, numWorker, ArchivoEntrada, ArchivoSalida, chunk, flag);
+    
+    //printf("\narchivoF:%s  CeldaF:%d    WorkerF:%d   ArchivoEntradaF:%s   ArchivoSalidaF:%s    ChunkF:%d    flagF:%d\n", argv[0], numCelda, numWorker, ArchivoEntrada, ArchivoSalida, chunk, flag);
 
-    int fd1[numWorker][2];
-    int fd2[numWorker][2];
+    //El arreglo para los pipe del padre y de los hijos
+    int fd1[numWorker][2]; //Donde el hijo leera lo del padre y el padre escribirá
+    int fd2[numWorker][2]; //Donde el padre leera lo del hijo y el hijo escribirá
     int pid;
     int i;
+    //Ciclo para generar los hijos y ademas los pipes.
     for ( i = 0; i < numWorker; i++) {
-        pipe(fd1[i]);
-        pipe(fd2[i]);
-        pid = fork();
+        pipe(fd1[i]); //Generar el pipe fd1
+        pipe(fd2[i]); //Generar el pipe fd2
+        pid = fork(); //Se crea el hijo
+        //En caso de ser el hijo
         if (pid == 0) {
-            // Proceso hijo
-            close(fd1[i][1]);
-            close(fd2[i][0]);
+            close(fd1[i][1]); //Cerrar el de escritura
+            close(fd2[i][0]); //Cerrar el de lectura
             
-            dup2(fd1[i][0], STDIN_FILENO);
-            dup2(fd2[i][1], STDOUT_FILENO);
+            dup2(fd1[i][0], STDIN_FILENO); //permite hacer la copia de STDIN_FILENO
+            dup2(fd2[i][1], STDOUT_FILENO); //permite hacer la copia de SDOUT_FILENO
 
-            // Ejecutamos el mismo código con execv
-            char *argumentos[] = {"./worker", NULL};
+            // Se ejecuta el exexv para dirijir al hijo al programa de worker con un argumento de las celdas
+            char *argumentos[] = {"./worker", argv[1],NULL};
             execv(argumentos[0], argumentos);
 
             // En caso de error en execv
@@ -46,43 +48,74 @@ int main(int argc, char *argv[]){
             exit(1);
         }
     }
-    int cantidadLineas;
-    char **lineas = lecturaArchivoEntrada(ArchivoEntrada, &cantidadLineas);
+
+    // ---- A partir de aquí corresponde al padre ----
+
+    int cantidadLineas; // Para guardar el dato de la cantidad de lineas
+    char **lineas = lecturaArchivoEntrada(ArchivoEntrada, &cantidadLineas); //entro al archivo y traigo las lineas
+    
+    /*
     for(i=0;i<cantidadLineas;i++){
         printf("linea %d = %s\n", i, lineas[i]);
     }
+    */
 
-    int contadorChunk=0;
-    int selectHijo=0;
-    close(fd1[selectHijo][0]);
-    close(fd2[selectHijo][1]);
+    int contadorChunk=0; //paras saber cuantos chunks lleva
+    int selectHijo=0; //Para saber a cual hijo elije
+    // Recorro todas las lineas
     for ( i = 0; i < cantidadLineas; i++) {
+        // En caso de que el contador sea igual al numero del chunk, reiniciar el contador a 0
         if(contadorChunk==chunk){
             contadorChunk=0;
         }
+        //Caso contrario, buscar aleatoriamente a un hijo
         if(contadorChunk==0){
             int aleatorio = rand();
             selectHijo = aleatorio % numWorker;
-            printf("aleatorio = %d\n", aleatorio);
             printf("Selected = %d\n", selectHijo);
         }
-        write(fd1[selectHijo][1], lineas[i], 100);
+        close(fd1[selectHijo][0]); //Cierro el de lectura para fd1
+        close(fd2[selectHijo][1]); //Cierro el de escritura pra fd2
         
+        write(fd1[selectHijo][1], lineas[i], 100); //Le envio la linea al hijo
         
-
+        /*
         char mensaje[100];
         read(fd2[selectHijo][0], mensaje, 100);
         printf("Llegó el mensaje: %s\n", mensaje);
+        */
+
         contadorChunk++;
     }
 
+    //Luego de enviar las lineas a los hijos, enviarle a todos un mensaje de FIN y recibir lo que calcularon
+    double *sum = calloc(numCelda, sizeof(double)); //Arreglo para guardar la suma de todos los datos de los hijos
+    int y = 0;
     for(i=0;i<numWorker;i++){
+        //Envio el mensaje FIN
         char mensajeEnvio[100] = "FIN";
         write(fd1[i][1], mensajeEnvio, 100);
 
-        char mensajeLlegada[100];
-        read(fd2[i][0], mensajeLlegada, 100);
-        printf("Llegó el mensaje: %s\n", mensajeLlegada);
+        //Se recibe el calculo de los hijos
+        char mensajeLlegada[10000];
+        read(fd2[i][0], mensajeLlegada, 10000);
+        //printf("Llegó el mensaje: %s\n", mensajeLlegada);
+
+        //Empiezo a leer el string traido separandolo y agregandolo al arreglo sum
+        char delimitador[] = ";";
+        char *token = strtok(mensajeLlegada, delimitador);
+        while(token != NULL){
+            // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
+            sum[y] = sum[y] + atof(token);
+            token = strtok(NULL, delimitador);
+            y++;
+        }
+        y=0;
+    }
+    
+    //Muestro el arreglo
+    for(i=0;i<numCelda;i++){
+        printf("%f\n", sum[i]);
     }
 
     return 0;

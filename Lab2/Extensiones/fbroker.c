@@ -1,24 +1,26 @@
 #include "fbroker.h"
 
-#define LOCATE "Ejemplos/"
-
 char **lecturaArchivoEntrada(char *nameFile, int *cantidad){
+    //Se define la localidad del archivo
     char direccionReal[100] = "";
     strcat(direccionReal, LOCATE);
     strcat(direccionReal, nameFile);
-    FILE * file = fopen(direccionReal, "r");
 
+    FILE * file = fopen(direccionReal, "r"); // Se abre el archivo
+
+    //En caso de que exista algun problema
     if(file==NULL){
         printf("El archivo de entrada no existe\n");
         return NULL;
     }
 
+    //Se saca la primera linea, la de la cantidad de particulas para usarse
     int cantidadDeParticulas;
     fscanf(file, "%d\n", &cantidadDeParticulas);
 
-    *cantidad = cantidadDeParticulas;
+    *cantidad = cantidadDeParticulas; //Se guarda el dato 
 
-    
+    //Se lee las demás lineas y se guardan, para luego ser usadas
     char linea[100];
     char **lineaConcadenada=malloc(cantidadDeParticulas*sizeof(char *));
     int i;
@@ -32,14 +34,4 @@ char **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     }
 
     return lineaConcadenada;
-}
-
-
-void procesoChunks(int numWorkers, int workerPipes[][2], char** linea, int numLineas) {
-    int workerID = rand() % numWorkers;
-    // Distribuir líneas entre los workers
-    for (int i = 0; i < numLineas; i++) {
-        write(workerPipes[workerID][1], &i, sizeof(int));
-        write(workerPipes[workerID][1], linea[i], strlen(linea[i]) + 1);
-    }
 }
