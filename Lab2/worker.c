@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]){
   int celdas = atoi(argv[1]); //Guardo el dato del argumento del programa
-  int chunkTotales = 0; //Declaro como los chunks totales del hijo en 0
+  int lineasProcesadas = 0; //Declaro como las lineas procesadas del hijo en 0
   
   char *lineasSplit; //Variable para guardar los datos separados de la linea que entrega el padre
   char delimitador[] = " "; //El delimitador por el cual están separados
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
 
     //Compruebo si llegó la palabra FIN
     if(!strcmp(mensaje, "FIN")){
-      double *arregloJoule = calculoEnergiaJoule(celdas, particula, chunkTotales); //Calculo el arregloJoule
+      double *arregloJoule = calculoEnergiaJoule(celdas, particula, lineasProcesadas); //Calculo el arregloJoule
       char *mensajeSalida = juntar(arregloJoule, celdas); //Genero el mensaje de Salida para enviar al padre
 
       write(STDOUT_FILENO, mensajeSalida, strlen(mensajeSalida)+1); //Se lo envio al padre
@@ -42,8 +42,8 @@ int main(int argc, char *argv[]){
       lineasSplit = strtok(NULL, delimitador);
       int energia = atoi(lineasSplit);
       particula = addParticula(particula, posicion, energia);
-      //Aumento el contador de chunks para saber cuantos chunks tiene en total (Por si se repite el hijo)
-      chunkTotales++;
+      //Aumento el contador de lineas para saber cuantas lineas tiene en total (Por si se repite el hijo)
+      lineasProcesadas++;
     }
   }
   

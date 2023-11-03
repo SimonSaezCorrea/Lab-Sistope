@@ -59,9 +59,15 @@ int main(int argc, char *argv[]){
         printf("linea %d = %s\n", i, lineas[i]);
     }
     */
+    int lineasHijos[numWorker];
+
+    for (i = 0; i < numWorker; i++){
+        lineasHijos[i] = 0;
+    }
 
     int contadorChunk=0; //paras saber cuantos chunks lleva
     int selectHijo=0; //Para saber a cual hijo elije
+
     // Recorro todas las lineas
     for ( i = 0; i < cantidadLineas; i++) {
         // En caso de que el contador sea igual al numero del chunk, reiniciar el contador a 0
@@ -86,11 +92,14 @@ int main(int argc, char *argv[]){
         */
 
         contadorChunk++;
+        lineasHijos[selectHijo]++;
     }
 
     //Luego de enviar las lineas a los hijos, enviarle a todos un mensaje de FIN y recibir lo que calcularon
     double *sum = calloc(numCelda, sizeof(double)); //Arreglo para guardar la suma de todos los datos de los hijos
     int y = 0;
+    double maximo = 0;
+    int celdaMax;
     for(i=0;i<numWorker;i++){
         //Envio el mensaje FIN
         char mensajeEnvio[100] = "FIN";
@@ -104,18 +113,34 @@ int main(int argc, char *argv[]){
         //Empiezo a leer el string traido separandolo y agregandolo al arreglo sum
         char delimitador[] = ";";
         char *token = strtok(mensajeLlegada, delimitador);
+        
         while(token != NULL){
             // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
             sum[y] = sum[y] + atof(token);
+            if (sum[y] > maximo){
+                maximo = sum[y];
+                celdaMax = y;
+            }
             token = strtok(NULL, delimitador);
             y++;
         }
         y=0;
     }
-    
+    printf("Celda:%d -- Maximo:%f\n",celdaMax,maximo);
+
     //Muestro el arreglo
+    /*
     for(i=0;i<numCelda;i++){
         printf("%f\n", sum[i]);
+    }
+    */
+
+    //Se escribe el archivo de salida
+
+    escribirArchivoSalida(ArchivoSalida,sum,numCelda,maximo,celdaMax);
+    //Se muestra el Grafico en caso de que se use el flag D
+    if (flag==1){
+        mostrarGrafica(sum,numCelda,maximo, lineasHijos,numWorker);
     }
 
     return 0;

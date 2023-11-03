@@ -75,28 +75,3 @@ char *juntar(double *arregloJoule,int cantidad){
     return mensajeSalida;
 }
 
-int porcentajeR3(double energiaPos,double maximo){
-    int porcentaje;
-    double x;
-    x = (energiaPos * 100)/maximo;
-    porcentaje = (int)(x + 0.5);
-    return porcentaje;
-    
-}
-
-void representarEnegia(int pos,double energia, int porEnergia){
-    int i = 0;
-    printf("%d\t%f\t|",pos,energia);
-    while (i < porEnergia){
-        printf("o");
-        i++;
-    }
-    printf("\n");
-}
-
-void mostrarGrafica(double *energias, int numEnergias, double maximo){
-    for (int i = 0; i < numEnergias; i++){
-        int per = porcentajeR3(energias[i],maximo);
-        representarEnegia(i,energias[i],per);
-    }
-}
