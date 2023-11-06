@@ -36,7 +36,7 @@ char **lecturaArchivoEntrada(char *nameFile, int *cantidad){
     return lineaConcadenada;
 }
 
-void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo){
+void escribirArchivoSalida(char *nameFile, double *energias, int numEnergias, double maximo, int posMaximo){
      //Establecer lugar en el que se crea/modifica el archivo
     char direccionReal[100] = "";
     strcat(direccionReal, LOCATE);
@@ -65,7 +65,7 @@ void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,doub
     fclose(file);
 }
 
-int porcentajeR3(double energiaPos,double maximo){
+int porcentajeR3(double energiaPos, double maximo){
     int porcentaje;
     double x;
     x = (energiaPos * 100)/maximo;
@@ -74,7 +74,7 @@ int porcentajeR3(double energiaPos,double maximo){
     
 }
 
-void representarEnegia(int pos,double energia, int porEnergia){
+void representarEnegia(int pos, double energia, int porEnergia){
     int i = 0;
     printf("%d\t%f\t|",pos,energia);
     while (i < porEnergia){
@@ -84,14 +84,18 @@ void representarEnegia(int pos,double energia, int porEnergia){
     printf("\n");
 }
 
-void mostrarGrafica(double *energias, int numEnergias, double maximo, int lineasProcesos[],int nProcesos ){
-    printf("Lineas Procesadas por proceso:\n");
+void mostrarGrafica(double *energias, int numEnergias, double maximo, int lineasProcesos[], int nProcesos ){
+    printf("\n--------------------------------------------------------------\n");
+    printf("Lineas Procesadas por proceso:\n\n");
     for (int i = 0; i < nProcesos; i++){
         printf("Proceso Hijo %d : %d lineas\n", i, lineasProcesos[i]);
     }
+    printf("\n--------------------------------------------------------------\n");
+    printf("--------------------------------------------------------------\n");
     printf("\nGrafico de Energias:\n\n");
     for (int i = 0; i < numEnergias; i++){
         int per = porcentajeR3(energias[i],maximo);
         representarEnegia(i,energias[i],per);
     }
+    printf("\n--------------------------------------------------------------\n");
 }

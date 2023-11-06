@@ -8,7 +8,7 @@
 #define LOCATE "Ejemplos/"
 
 /*
-Entrada: char  *nameFile: El nombre del archivo con las particulas
+Entrada: char *nameFile: El nombre del archivo con las particulas
          int *cantidad: la variable en la que se almacenará el dato 
                         de cantidad de particulas
 
@@ -21,7 +21,7 @@ de la cantidad de particulass en la variable "*cantidad"
 char **lecturaArchivoEntrada(char *nameFile, int *cantidad);
 
 /*
-Entrada: char  *nameFile: El nombre del archivo en es que se va a escribir las energias
+Entrada: char *nameFile: El nombre del archivo en es que se va a escribir las energias
          double *energias: La lista que contiene las energias por ser escritas en el archivo
          int numEnergias: El numero de energias por ser escritas en el archivo
          double maximo: La maxima energia que va a ser escrita en primer lugar en el archivo
@@ -33,7 +33,7 @@ Descripción: Se escribe un archivo de salida cuya primera linea es la posición
 seguida por la misma energia maxima acumulada, a continuacion las siguientes linas son un listado descendente de las posiciones
 de celdas con su respectiva energia acumulada. 
 */
-void escribirArchivoSalida(char* nameFile,double *energias, int numEnergias,double maximo, int posMaximo);
+void escribirArchivoSalida(char* nameFile, double *energias, int numEnergias, double maximo, int posMaximo);
 
 /*
 Entrada: double energiaPos: La energia que requiere calcular su porcentaje.
@@ -44,7 +44,7 @@ Salida: int: retorna el porcentaje aproximado de la energia.
 
 Descripción: Permite calcular el porcentaje de la energia, conociendo la energia maxima y asi usar regla de 3.
 */
-int porcentajeR3(double energiaPos,double maximo);
+int porcentajeR3(double energiaPos, double maximo);
 
 /*
 Entrada: int pos: La posicion que se desea mostrar por terminal como parte de una representacion grafica de las energia.
@@ -56,7 +56,7 @@ Salida: void: sin salida.
 Descripción: Permite representar graficamente una posicion de celda con su respectiva energia y una ayuda visiual, luego imprime por terminal
 dicha representación. 
 */
-void representarEnegia(int pos,double energia, int porEnergia);
+void representarEnegia(int pos, double energia, int porEnergia);
 
 /*
 Entrada: double *energias: Lista de energias que van a ser representadas graficamente y mostradas por terminal.
@@ -69,7 +69,7 @@ Salida: void: sin salida.
 
 Descripción: Representar graficamente las energias de una lista y las va mostrando por terminal una por una.
 */
-void mostrarGrafica(double *energias, int numEnergias ,double maximo, int lineasProcesos[],int nProcesos);
+void mostrarGrafica(double *energias, int numEnergias, double maximo, int lineasProcesos[], int nProcesos);
 
 
 #endif

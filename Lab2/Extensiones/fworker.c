@@ -55,7 +55,7 @@ double *calculoEnergiaJoule(int numeroDeCeldas, particulas *listaParticulas, int
     return arregloJoule;
 }
 
-char *juntar(double *arregloJoule,int cantidad){
+char *juntar(double *arregloJoule, int cantidad){
     int i;
     char *mensajeSalida=NULL;
     int longitud = 0;

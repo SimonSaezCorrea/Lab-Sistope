@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
         if(contadorChunk==0){
             int aleatorio = rand();
             selectHijo = aleatorio % numWorker;
-            printf("Selected = %d\n", selectHijo);
+            //printf("Selected = %d\n", selectHijo);
         }
         close(fd1[selectHijo][0]); //Cierro el de lectura para fd1
         close(fd2[selectHijo][1]); //Cierro el de escritura pra fd2
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
         }
         y=0;
     }
-    printf("Celda:%d -- Maximo:%f\n",celdaMax,maximo);
+    //printf("Celda:%d -- Maximo:%f\n",celdaMax,maximo);
 
     //Muestro el arreglo
     /*
