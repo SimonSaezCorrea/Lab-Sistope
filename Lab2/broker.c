@@ -63,17 +63,11 @@ int main(int argc, char *argv[]){
     printf("...Leyendo archivo\n\n");
     lineas *paqueteDeLineas = lecturaArchivoEntrada(ArchivoEntrada, &cantidadLineas); //entro al archivo y traigo las lineas
     //showLineas(paqueteDeLineas);
-    int lineasHijos[numWorker];
-
-    for (i = 0; i < numWorker; i++){
-        lineasHijos[i] = 0;
-    }
-
     int contadorChunk=0; //paras saber cuantos chunks lleva
     int selectHijo=0; //Para saber a cual hijo elije
 
     // Recorro todas las lineas
-    printf("...Generando los Hijos\n\n");
+    printf("...Enviando mensajes de lineas\n\n");
     for ( i = 0; i < cantidadLineas; i++) {
         // En caso de que el contador sea igual al numero del chunk, reiniciar el contador a 0
         if(contadorChunk==chunk){
@@ -83,7 +77,6 @@ int main(int argc, char *argv[]){
         if(contadorChunk==0){
             int aleatorio = rand();
             selectHijo = aleatorio % numWorker;
-            //printf("Selected = %d\n", selectHijo);
         }
         close(searchDescriptor(fd1, selectHijo, numWorker)[0]); //Cierro el de lectura para fd1
         close(searchDescriptor(fd2, selectHijo, numWorker)[1]); //Cierro el de escritura pra fd2
@@ -97,8 +90,8 @@ int main(int argc, char *argv[]){
         */
 
         contadorChunk++;
-        lineasHijos[selectHijo]++;
     }
+    printf("...Generando lista de celdas para sumar\n\n");
     //Luego de enviar las lineas a los hijos, enviarle a todos un mensaje de FIN y recibir lo que calcularon
     energia *sum = NULL; //Arreglo para guardar la suma de todos los datos de los hijos
     for(i=0; i<numCelda;i++){
@@ -107,6 +100,8 @@ int main(int argc, char *argv[]){
     int y;
     double maximo = 0;
     int celdaMax;
+    int lineasHijos[numWorker];
+    char mensajeLlegada[100];
     printf("...Enviando mensaje de FIN y leyendo pipe\n\n");
     for(i=0;i<numWorker;i++){
         //Envio el mensaje FIN
@@ -117,18 +112,22 @@ int main(int argc, char *argv[]){
         for(y=0;y<numCelda;y++){
             //printf("empieza el bucle -> i = %d      y=%d    numCelda=%d\n",i ,y, numCelda);
             //Se recibe el calculo de los hijos
-            char mensajeLlegada[100];
             read(searchDescriptor(fd2, i, numWorker)[0], mensajeLlegada, 100);
             //printf("Llegó el mensaje: %s\n\n", mensajeLlegada);
             //printf("%s\n", mensajeLlegada);
             //Sumar
             sumarEnergia(sum, y, numCelda,atof(mensajeLlegada));
-            if (searchEnergia(sum, y, numCelda) > maximo){
-                maximo = searchEnergia(sum, y, numCelda);
+            int energiaDelhijo = searchEnergia(sum, y, numCelda);
+            if (energiaDelhijo > maximo){
+                maximo = energiaDelhijo;
                 celdaMax = y;
             }
             write(searchDescriptor(fd1, i, numWorker)[1], mensajeEnvio, 100);
         }
+
+        read(searchDescriptor(fd2, i, numWorker)[0], mensajeLlegada, 100);
+        lineasHijos[i]=atoi(mensajeLlegada);
+        
     }
     //printf("Celda:%d -- Maximo:%f\n",celdaMax,maximo);
 

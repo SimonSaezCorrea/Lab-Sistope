@@ -1,28 +1,40 @@
 #include "particulas.h"
 
-particulas *addParticula(particulas *P, int posicion, int energia){
-    particulas *aux = P;
+/*
+Entrada: particulas *particulas: Se entrega una lista de particulas
+         int posicion: Se entrega la posicion de la particula
+         int energia: Se entrega la posicion de la energia
 
-    if(aux != NULL){
-        while(aux->next!=NULL){
-                aux = aux->next;
-        }
-        aux->next = (particulas *)malloc(sizeof(particulas));
-        aux->next->posicion = posicion;
-        aux->next->energia = energia;
-        aux->next->next = NULL;
-    }
-    else{
+Salida: particulas: retornará el struct particulas con el elemento añadido
+
+Descripción: Función que permite guardar una particula al inicio de la lista
+*/
+particulas *addParticula(particulas *P, int posicion, int energia){
+    if(P != NULL){
+        particulas *aux;
         aux = (particulas *)malloc(sizeof(particulas));
         aux->posicion = posicion;
         aux->energia = energia;
-        aux->next = NULL;
-        P = aux;
-    }
+        aux->next = P;
 
-    return P;
+        return aux;
+    }
+    else{
+        P = (particulas *)malloc(sizeof(particulas));
+        P->posicion = posicion;
+        P->energia = energia;
+        P->next = NULL;
+        return P;
+    }
 }
 
+/*
+Entrada: particulas *particulas: Se entrega una lista de particulas
+
+Salida: void
+
+Descripción: Función que permite liberar la memoria usada
+*/
 void liberarParticulas(particulas *P){
     particulas *aux = P;
     particulas *aux2;
@@ -33,6 +45,13 @@ void liberarParticulas(particulas *P){
     }
 }
 
+/*
+Entrada: particulas *particulas: Se entrega una lista de particulas
+
+Salida: void
+
+Descripción: Mostrar los elementos del particulas
+*/
 void showParticulas(particulas *P){
     particulas *aux = P;
     printf("Particula: \n");
@@ -41,23 +60,4 @@ void showParticulas(particulas *P){
         aux = aux->next;
     }
     printf("----------\n");
-}
-
-int *searchParticulas(particulas *P, int position, int len){
-    particulas *aux = P;
-    int *dato = malloc(2*sizeof(int));
-    if(len > position){
-        int i = 0;
-        while(i<position){
-            aux = aux->next;
-            i++;
-        }
-        dato[0] = aux->posicion;
-        dato[1] = aux->energia;
-        return dato;
-    }else{
-        printf("No se puede acceder a esa posición\n");
-        return NULL;
-    }
-
 }

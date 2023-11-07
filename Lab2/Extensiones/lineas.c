@@ -1,47 +1,37 @@
 #include "lineas.h"
 
 /*
-Entrada: lineas *lineas: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las lineas y que 
-                                 además dirijirá a otro lineas, es decir es 
-                                 una lista de datos 
-         int posicion: Se entrega la posicion de la particula
-         int energia: Se entrega la posicion de la energia
+Entrada: lineas *lineas: Se entrega una lista de lineas
+         char *linea: La linea a guardar
 
 Salida: lineas: retornará el struct lineas con el elemento añadido
 
-Descripción: Función que permite guardar una particula al final de la cola
+Descripción: Función que permite guardar una linea al inicio de la cola
 */
 lineas *addLinea(lineas *P, char *linea){
-    lineas *aux = P;
-
-    if(aux != NULL){
-        while(aux->next!=NULL){
-                aux = aux->next;
-        }
-        aux->next = (lineas *)malloc(sizeof(lineas));
-        aux->next->linea = (char *)malloc(100*sizeof(char));
-        strcpy(aux->next->linea, linea);
-        aux->next->next = NULL;
-    }
-    else{
+    if(P != NULL){
+        lineas *aux;
         aux = (lineas *)malloc(sizeof(lineas));
         aux->linea = (char *)malloc(100*sizeof(char));
         strcpy(aux->linea, linea);
-        aux->next = NULL;
-        P = aux;
-    }
+        aux->next = P;
 
+        return aux;
+    }
+    else{
+        P = (lineas *)malloc(sizeof(lineas));
+        P->linea = (char *)malloc(100*sizeof(char));
+        strcpy(P->linea, linea);
+        P->next = NULL;
+        return P;
+    }
     return P;
 }
 
 /*
-Entrada: lineas *lineas: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las lineas y que 
-                                 además dirijirá a otro lineas, es decir es 
-                                 una lista de datos  
+Entrada: lineas *lineas: Se entrega una lista de lineas 
 
-Salida: Nada
+Salida: void
 
 Descripción: Función que permite liberar la memoria usada
 */
@@ -57,11 +47,8 @@ void liberarLineas(lineas *P){
 }
 
 /*
-Entrada: lineas *lineas: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las lineas y que 
-                                 además dirijirá a otro lineas, es decir es 
-                                 una lista de datos 
-Salida: Nada
+Entrada: lineas *lineas: Se entrega una lista de lineas
+Salida: void
 
 Descripción: Mostrar los elementos del lineas
 */
@@ -76,10 +63,7 @@ void showLineas(lineas *P){
 }
 
 /*
-Entrada: lineas *lineas: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las lineas y que 
-                                 además dirijirá a otro lineas, es decir es 
-                                 una lista de datos 
+Entrada: lineas *lineas: Se entrega una lista de lineas
          int position: Es la posición que se desea buscar
          int len: Es el largo máximo de la lista de lineas
 

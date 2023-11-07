@@ -1,45 +1,35 @@
 #include "energia.h"
 
 /*
-Entrada: energia *energia: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las energia y que 
-                                 además dirijirá a otro energia, es decir es 
-                                 una lista de datos 
-         int posicion: Se entrega la posicion de la Energia
-         int energia: Se entrega la posicion de la energia
+Entrada: energia *energia: Se entrega una lista de energia
 
 Salida: energia: retornará el struct energia con el elemento añadido
 
-Descripción: Función que permite guardar una particula al final de la cola
+Descripción: Función que permite guardar una energía al inicio de la lista e 
+             inicializarla la energia en 0
 */
 energia *addEnergia(energia *P){
-    energia *aux = P;
 
-    if(aux != NULL){
-        while(aux->next!=NULL){
-                aux = aux->next;
-        }
-        aux->next = (energia *)malloc(sizeof(energia));
-        aux->next->energia = 0;
-        aux->next->next = NULL;
-    }
-    else{
+    if(P != NULL){
+        energia *aux;
         aux = (energia *)malloc(sizeof(energia));
         aux->energia = 0;
-        aux->next = NULL;
-        P = aux;
-    }
+        aux->next = P;
 
-    return P;
+        return aux;
+    }
+    else{
+        P = (energia *)malloc(sizeof(energia));
+        P->energia = 0;
+        P->next = NULL;
+        return P;
+    }
 }
 
 /*
-Entrada: energia *energia: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las energia y que 
-                                 además dirijirá a otro energia, es decir es 
-                                 una lista de datos  
+Entrada: energia *energia: Se entrega una lista de energia
 
-Salida: Nada
+Salida: void
 
 Descripción: Función que permite liberar la memoria usada
 */
@@ -54,13 +44,10 @@ void liberarEnergia(energia *P){
 }
 
 /*
-Entrada: energia *energia: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las energia y que 
-                                 además dirijirá a otro energia, es decir es 
-                                 una lista de datos 
-Salida: Nada
+Entrada: energia *energia: Se entrega una lista de energia
+Salida: void
 
-Descripción: Mostrar los elementos del energia
+Descripción: Mostrar los elementos de las celdas, principalmente de la energia
 */
 void showEnergia(energia *P){
     energia *aux = P;
@@ -75,16 +62,13 @@ void showEnergia(energia *P){
 }
 
 /*
-Entrada: energia *energia: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las energia y que 
-                                 además dirijirá a otro energia, es decir es 
-                                 una lista de datos 
+Entrada: energia *energia: Se entrega una lista de energia
          int position: Es la posición que se desea buscar
          int len: Es el largo máximo de la lista de energia
 
-Salida: int: El arreglo de descriptores de una posición en específica
+Salida: int: La energia de una posición en específica de la celda
 
-Descripción: Permite buscar, dentro de la lista energia, un elemento en una
+Descripción: Permite buscar, dentro de la lista energia, la energia en una
              posición X
 */
 double searchEnergia(energia *P, int position, int len){
@@ -104,6 +88,17 @@ double searchEnergia(energia *P, int position, int len){
 
 }
 
+/*
+Entrada: energia *energia: Se entrega una lista de energia
+         int position: Es la posición que se desea buscar
+         int len: Es el largo máximo de la lista de energia
+         double valor: Energia que se sumará
+
+Salida: void
+
+Descripción: Función que permite sumarle a la celda con energía, una
+             energía que se le pase
+*/
 void sumarEnergia(energia *P, int position, int len, double valor){
     energia *aux = P;
     int *dato = malloc(2*sizeof(int));

@@ -100,46 +100,6 @@ int main(int argc, char *argv[]){
     else{
         int status;
         waitpid(pid, &status, 0);
-        /*
-        int numeroCelda = atoi(numeroCeldaString);
-
-        int cantidad = 0;
-        double maximo = 0;
-        int pos = 0;
-        // printf("-----------------\n");
-        int **particulas = lecturaArchivoEntrada(nombreArchivoEntrada, &cantidad);
-
-        double *salida = calculoEnergiaJoule(numeroCelda, particulas, cantidad, &maximo, &pos);
-
-        
-        //Solo para ver que esté bien los resultados
-        printf("\nMaximo: %f -- Posicion: %d\n", maximo, pos);
-        printf("---------\n");
-        int probar=0;
-        while(probar<numeroCelda){
-            printf("%d) %f\n", probar +1,salida[probar]);
-            probar++;
-        }
-        printf("---------\n");
-        
-
-        if (strcmp(flag, "1") == 0){
-            mostrarGrafica(salida, numeroCelda, maximo);
-        }
-        escribirArchivoSalida(nombreArchivoSalida, salida, numeroCelda, maximo, pos);
-
-        printf("----------\nLiberando Memoria\n");
-        int q = 0;
-        while (q < cantidad){
-
-            free(particulas[q]);
-            q++;
-        }
-        free(particulas);
-
-        free(salida);
-        printf("Memoria liberada\n----------\n");
-        */
     }
     return 0;
 }

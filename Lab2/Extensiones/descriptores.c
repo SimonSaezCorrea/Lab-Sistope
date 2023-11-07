@@ -1,14 +1,12 @@
 #include "descriptores.h"
 
 /*
-Entrada: descriptores *descriptores: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las descriptores y que 
-                                 además dirijirá a otro descriptores, es decir es 
-                                 una lista de datos
+Entrada: descriptores *descriptores: Se entrega una lista de descriptores
 
 Salida: descriptores: retornará el struct descriptores con el elemento añadido
 
-Descripción: Función que permite guardar una particula al final de la cola
+Descripción: Función que permite guardar un descriptor e iniciarla con el pipe 
+             al final de la cola
 */
 descriptores *addDescriptor(descriptores *P){
     descriptores *aux = P;
@@ -32,12 +30,9 @@ descriptores *addDescriptor(descriptores *P){
 }
 
 /*
-Entrada: descriptores *descriptores: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las descriptores y que 
-                                 además dirijirá a otro descriptores, es decir es 
-                                 una lista de datos  
+Entrada: descriptores *descriptores: Se entrega una lista de descriptores
 
-Salida: Nada
+Salida: void
 
 Descripción: Función que permite liberar la memoria usada
 */
@@ -52,10 +47,7 @@ void liberarDescriptor(descriptores *P){
 }
 
 /*
-Entrada: descriptores *descriptores: Se entrega una estructura de dato en la cual 
-                                 contendrá un arreglo que las descriptores y que 
-                                 además dirijirá a otro descriptores, es decir es 
-                                 una lista de datos 
+Entrada: descriptores *descriptores: Se entrega una lista de descriptores
          int position: Es la posición que se desea buscar
          int len: Es el largo máximo de la lista de descriptores
 

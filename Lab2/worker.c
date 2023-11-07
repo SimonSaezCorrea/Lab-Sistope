@@ -24,16 +24,16 @@ int main(int argc, char *argv[]){
     if(!strcmp(mensaje, "FIN")){
       double *arregloJoule = calculoEnergiaJoule(celdas, particula, lineasProcesadas); //Calculo el arregloJoule
       //char *mensajeSalida = juntar(arregloJoule, celdas); //Genero el mensaje de Salida para enviar al padre
-
+      char mensajeSalida[100];
       int i;
       for(i=0;i<celdas;i++){
-        char mensajeSalida[100];
+        
         sprintf(mensajeSalida, "%f", arregloJoule[i]);
         write(STDOUT_FILENO, mensajeSalida, strlen(mensajeSalida)+1); //Se lo envio al padre
         read(STDIN_FILENO, mensaje, 100);
       }
-      
-      
+      sprintf(mensajeSalida, "%d", lineasProcesadas);
+      write(STDOUT_FILENO, mensajeSalida, strlen(mensajeSalida)+1);
       //Libero la memoria
       free(arregloJoule);
       liberarParticulas(particula);
