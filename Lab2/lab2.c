@@ -6,10 +6,10 @@
 #include <sys/wait.h>   
 
 int main(int argc, char *argv[]){
-    char numeroCeldaString[4];             // Variable para la cantidad de celdas
+    char numeroCeldaString[100];             // Variable para la cantidad de celdas
     int obligatorioEntradaNumeroCelda = 0; // Verificar que exista una entrada -N
 
-    char numeroWorker[4];                   // Variable para la cantidad de workers
+    char numeroWorker[100];                   // Variable para la cantidad de workers
     int obligatorioEntradaNumeroWorker = 0; // Verificar que exista una entrada -p
 
     char nombreArchivoEntrada[100];                 // Variable para el archivo de entrada
@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
     char nombreArchivoSalida[100];                 // Variable para el archivo de salida
     int obligatorioEntradaNombreArchivoSalida = 0; // Verificar que exista una entrada -o
 
-    char numeroChunk[4];                           //Variable para la cantidad de chunks
+    char numeroChunk[100];                           //Variable para la cantidad de chunks
     int obligatorioEntradaNumeroChunk = 0;         //Verificar que existe una entrada -c
 
     char flag[2] = "0"; // Variable para mostrar por pantalla

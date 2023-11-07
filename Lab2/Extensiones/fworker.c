@@ -2,6 +2,19 @@
 
 #define MIN_ENERGY 0.001
 
+/*
+Entrada: int Ei: La energía acumulada.
+         int Ej: Energía potencial que trae.
+         int j: Posición de impacto.
+         int i: La posición del arreglo.
+         int N: Numero de celdas.
+
+Salida: int: Valor resultante de la Energía acumulada, osea el Ei.
+
+Descripción: Calculara la energía acumulada para la casilla, esta
+             energía se calcula mediante una formula para el
+             cálculo de Eij.
+*/
 double calculoEnergiaAcumulada(double Ei, int Ej, int j, int i, int N){
     //Eij es la energía depositada y se calcula mediante la ecuación
     double Eij = 1000 * Ej;
@@ -14,6 +27,16 @@ double calculoEnergiaAcumulada(double Ei, int Ej, int j, int i, int N){
     return total;
 }
 
+/*
+Entrada: float *arregloJoule: El arreglo que contiene la energía.
+         int numeroDeCeldas: La cantidad de celdas.
+         int posicionImpacto: La posición de impacto.
+         int energiaImpacto: La energía de impacto.
+
+Salida: void: nada.
+
+Descripción: Calcula la energía hacia la derecha del arregloJoule.
+*/
 void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto){
     int i = posicionImpacto + 1;
     while (i < numeroDeCeldas){
@@ -23,6 +46,16 @@ void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpact
     
 }
 
+/*
+Entrada: float *arregloJoule: El arreglo que contiene la energía.
+         int numeroDeCeldas: La cantidad de celdas.
+         int posicionImpacto: La posición de impacto.
+         int energiaImpacto: La energía de impacto.
+
+Salida: void: nada.
+
+Descripción: Calcula la energía hacia la izquierda del arregloJoule.
+*/
 void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto){
     int i = posicionImpacto - 1;
     if(i >= numeroDeCeldas){
@@ -34,6 +67,16 @@ void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpa
     }
 }
 
+/*
+Entrada: int numeroDeCeldas: La cantidad de celdas.
+         particulas *listaParticulas: Lista que contiene la posición y la energía de impacto.
+         int cantidadParticulas: Es la cantidad de particulas en la lista.
+Salida: float: retorna una lista que contiene la energía depositada por los
+        impactos.
+
+Descripción: Permite calcular la enería de impacto en cada posición y como
+             se distribuye en el material.
+*/
 double *calculoEnergiaJoule(int numeroDeCeldas, particulas *listaParticulas, int cantidadParticulas){
     double *arregloJoule = calloc(numeroDeCeldas, sizeof(double));
     int i = 0;
@@ -55,6 +98,16 @@ double *calculoEnergiaJoule(int numeroDeCeldas, particulas *listaParticulas, int
     return arregloJoule;
 }
 
+/*
+Entrada: double *arregloJoule: El arreglo que contiene la energía.
+         int cantidad: Es la cantidad de particulas en la lista.
+
+Salida: char: retorna una cadena de caracteres, la cual contiene cada elemento
+              del arregloJoule.
+
+Descripción: Permite transformar cada elemento del arregloJoule en una cadena
+             de caracteres separados mendiante un ';'.
+*/
 char *juntar(double *arregloJoule, int cantidad){
     int i;
     char *mensajeSalida=NULL;

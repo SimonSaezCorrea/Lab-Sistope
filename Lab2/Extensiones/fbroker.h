@@ -4,6 +4,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include "lineas.h"
+#include "energia.h"
 
 #define LOCATE "Ejemplos/"
 
@@ -18,7 +20,7 @@ Descripción: Se retornará una lista de particulas en la cual contendrá,
 para cada particula, su impacto y energía. Además se almacenará el valor 
 de la cantidad de particulass en la variable "*cantidad"
 */
-char **lecturaArchivoEntrada(char *nameFile, int *cantidad);
+lineas *lecturaArchivoEntrada(char *nameFile, int *cantidad);
 
 /*
 Entrada: char *nameFile: El nombre del archivo en es que se va a escribir las energias
@@ -33,7 +35,7 @@ Descripción: Se escribe un archivo de salida cuya primera linea es la posición
 seguida por la misma energia maxima acumulada, a continuacion las siguientes linas son un listado descendente de las posiciones
 de celdas con su respectiva energia acumulada. 
 */
-void escribirArchivoSalida(char* nameFile, double *energias, int numEnergias, double maximo, int posMaximo);
+void escribirArchivoSalida(char* nameFile, energia *energias, int numEnergias, double maximo, int posMaximo);
 
 /*
 Entrada: double energiaPos: La energia que requiere calcular su porcentaje.
@@ -69,7 +71,7 @@ Salida: void: sin salida.
 
 Descripción: Representar graficamente las energias de una lista y las va mostrando por terminal una por una.
 */
-void mostrarGrafica(double *energias, int numEnergias, double maximo, int lineasProcesos[], int nProcesos);
+void mostrarGrafica(energia *energias, int numEnergias, double maximo, int lineasProcesos[], int nProcesos);
 
 
 #endif

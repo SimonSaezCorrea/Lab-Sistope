@@ -60,7 +60,7 @@ Salida: Nada
 
 Descripción: Mostrar los elementos del particulas
 */
-void showLineas(particulas *particulas);
+void showParticulas(particulas *particulas);
 
 /*
 Entrada: particulas *particulas: Se entrega una estructura de dato en la cual 
@@ -75,6 +75,6 @@ Salida: int: El arreglo de descriptores de una posición en específica
 Descripción: Permite buscar, dentro de la lista particulas, un elemento en una
              posición X
 */
-int *searchLineas(particulas *particulas, int position, int len);
+int *searchParticulas(particulas *particulas, int position, int len);
 
 #endif

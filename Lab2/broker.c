@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include "Extensiones/fbroker.h"
+#include "Extensiones/descriptores.h"
+#include "Extensiones/lineas.h"
+#include "Extensiones/energia.h"
 
 
 int main(int argc, char *argv[]){
@@ -22,22 +25,27 @@ int main(int argc, char *argv[]){
     //printf("\narchivoF:%s  CeldaF:%d    WorkerF:%d   ArchivoEntradaF:%s   ArchivoSalidaF:%s    ChunkF:%d    flagF:%d\n", argv[0], numCelda, numWorker, ArchivoEntrada, ArchivoSalida, chunk, flag);
 
     //El arreglo para los pipe del padre y de los hijos
-    int fd1[numWorker][2]; //Donde el hijo leera lo del padre y el padre escribirá
-    int fd2[numWorker][2]; //Donde el padre leera lo del hijo y el hijo escribirá
+    //Donde el hijo leera lo del padre y el padre escribirá
+    //int fd1[numWorker][2];
+    descriptores *fd1 = NULL; 
+    //Donde el padre leera lo del hijo y el hijo escribirá
+    //int fd2[numWorker][2]; 
+    descriptores *fd2 = NULL;
     int pid;
     int i;
+    printf("...Generando Hijos\n\n");
     //Ciclo para generar los hijos y ademas los pipes.
     for ( i = 0; i < numWorker; i++) {
-        pipe(fd1[i]); //Generar el pipe fd1
-        pipe(fd2[i]); //Generar el pipe fd2
+        fd1 = addDescriptor(fd1); //Generar el pipe fd1
+        fd2 = addDescriptor(fd2);; //Generar el pipe fd2
         pid = fork(); //Se crea el hijo
         //En caso de ser el hijo
         if (pid == 0) {
-            close(fd1[i][1]); //Cerrar el de escritura
-            close(fd2[i][0]); //Cerrar el de lectura
+            close(searchDescriptor(fd1, i, i+1)[1]); //Cerrar el de escritura
+            close(searchDescriptor(fd2, i, i+1)[0]); //Cerrar el de lectura
             
-            dup2(fd1[i][0], STDIN_FILENO); //permite hacer la copia de STDIN_FILENO
-            dup2(fd2[i][1], STDOUT_FILENO); //permite hacer la copia de SDOUT_FILENO
+            dup2(searchDescriptor(fd1, i, i+1)[0], STDIN_FILENO); //permite hacer la copia de STDIN_FILENO
+            dup2(searchDescriptor(fd2, i, i+1)[1], STDOUT_FILENO); //permite hacer la copia de SDOUT_FILENO
 
             // Se ejecuta el exexv para dirijir al hijo al programa de worker con un argumento de las celdas
             char *argumentos[] = {"./worker", argv[1],NULL};
@@ -52,13 +60,9 @@ int main(int argc, char *argv[]){
     // ---- A partir de aquí corresponde al padre ----
 
     int cantidadLineas; // Para guardar el dato de la cantidad de lineas
-    char **lineas = lecturaArchivoEntrada(ArchivoEntrada, &cantidadLineas); //entro al archivo y traigo las lineas
-    
-    /*
-    for(i=0;i<cantidadLineas;i++){
-        printf("linea %d = %s\n", i, lineas[i]);
-    }
-    */
+    printf("...Leyendo archivo\n\n");
+    lineas *paqueteDeLineas = lecturaArchivoEntrada(ArchivoEntrada, &cantidadLineas); //entro al archivo y traigo las lineas
+    //showLineas(paqueteDeLineas);
     int lineasHijos[numWorker];
 
     for (i = 0; i < numWorker; i++){
@@ -69,6 +73,7 @@ int main(int argc, char *argv[]){
     int selectHijo=0; //Para saber a cual hijo elije
 
     // Recorro todas las lineas
+    printf("...Generando los Hijos\n\n");
     for ( i = 0; i < cantidadLineas; i++) {
         // En caso de que el contador sea igual al numero del chunk, reiniciar el contador a 0
         if(contadorChunk==chunk){
@@ -80,10 +85,10 @@ int main(int argc, char *argv[]){
             selectHijo = aleatorio % numWorker;
             //printf("Selected = %d\n", selectHijo);
         }
-        close(fd1[selectHijo][0]); //Cierro el de lectura para fd1
-        close(fd2[selectHijo][1]); //Cierro el de escritura pra fd2
+        close(searchDescriptor(fd1, selectHijo, numWorker)[0]); //Cierro el de lectura para fd1
+        close(searchDescriptor(fd2, selectHijo, numWorker)[1]); //Cierro el de escritura pra fd2
         
-        write(fd1[selectHijo][1], lineas[i], 100); //Le envio la linea al hijo
+        write(searchDescriptor(fd1, selectHijo, numWorker)[1], searchLineas(paqueteDeLineas, i, cantidadLineas), 100); //Le envio la linea al hijo
         
         /*
         char mensaje[100];
@@ -94,54 +99,53 @@ int main(int argc, char *argv[]){
         contadorChunk++;
         lineasHijos[selectHijo]++;
     }
-
     //Luego de enviar las lineas a los hijos, enviarle a todos un mensaje de FIN y recibir lo que calcularon
-    double *sum = calloc(numCelda, sizeof(double)); //Arreglo para guardar la suma de todos los datos de los hijos
-    int y = 0;
+    energia *sum = NULL; //Arreglo para guardar la suma de todos los datos de los hijos
+    for(i=0; i<numCelda;i++){
+        sum = addEnergia(sum);
+    }
+    int y;
     double maximo = 0;
     int celdaMax;
+    printf("...Enviando mensaje de FIN y leyendo pipe\n\n");
     for(i=0;i<numWorker;i++){
         //Envio el mensaje FIN
         char mensajeEnvio[100] = "FIN";
-        write(fd1[i][1], mensajeEnvio, 100);
-
-        //Se recibe el calculo de los hijos
-        char mensajeLlegada[10000];
-        read(fd2[i][0], mensajeLlegada, 10000);
-        //printf("Llegó el mensaje: %s\n", mensajeLlegada);
-
-        //Empiezo a leer el string traido separandolo y agregandolo al arreglo sum
-        char delimitador[] = ";";
-        char *token = strtok(mensajeLlegada, delimitador);
-        
-        while(token != NULL){
-            // Sólo en la primera pasamos la cadena; en las siguientes pasamos NULL
-            sum[y] = sum[y] + atof(token);
-            if (sum[y] > maximo){
-                maximo = sum[y];
+        write(searchDescriptor(fd1, i, numWorker)[1], mensajeEnvio, 100);
+        //Empieza a recibir muchos mensajes del broker
+        printf("...Leyendo los datos del hijo %d\n\n", i);
+        for(y=0;y<numCelda;y++){
+            //printf("empieza el bucle -> i = %d      y=%d    numCelda=%d\n",i ,y, numCelda);
+            //Se recibe el calculo de los hijos
+            char mensajeLlegada[100];
+            read(searchDescriptor(fd2, i, numWorker)[0], mensajeLlegada, 100);
+            //printf("Llegó el mensaje: %s\n\n", mensajeLlegada);
+            //printf("%s\n", mensajeLlegada);
+            //Sumar
+            sumarEnergia(sum, y, numCelda,atof(mensajeLlegada));
+            if (searchEnergia(sum, y, numCelda) > maximo){
+                maximo = searchEnergia(sum, y, numCelda);
                 celdaMax = y;
             }
-            token = strtok(NULL, delimitador);
-            y++;
+            write(searchDescriptor(fd1, i, numWorker)[1], mensajeEnvio, 100);
         }
-        y=0;
     }
     //printf("Celda:%d -- Maximo:%f\n",celdaMax,maximo);
 
     //Muestro el arreglo
-    /*
-    for(i=0;i<numCelda;i++){
-        printf("%f\n", sum[i]);
-    }
-    */
 
     //Se escribe el archivo de salida
-
+    printf("...Escribiendo en el archivo\n\n");
     escribirArchivoSalida(ArchivoSalida,sum,numCelda,maximo,celdaMax);
     //Se muestra el Grafico en caso de que se use el flag D
     if (flag==1){
         mostrarGrafica(sum,numCelda,maximo, lineasHijos,numWorker);
     }
+
+    liberarDescriptor(fd1);
+    liberarDescriptor(fd2);
+    liberarLineas(paqueteDeLineas);
+    liberarEnergia(sum);
 
     return 0;
 }

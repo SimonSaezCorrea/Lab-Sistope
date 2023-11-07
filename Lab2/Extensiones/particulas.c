@@ -33,7 +33,7 @@ void liberarParticulas(particulas *P){
     }
 }
 
-void showLineas(particulas *P){
+void showParticulas(particulas *P){
     particulas *aux = P;
     printf("Particula: \n");
     while(aux->next != NULL){
@@ -43,7 +43,7 @@ void showLineas(particulas *P){
     printf("----------\n");
 }
 
-int *searchLineas(particulas *P, int position, int len){
+int *searchParticulas(particulas *P, int position, int len){
     particulas *aux = P;
     int *dato = malloc(2*sizeof(int));
     if(len > position){
