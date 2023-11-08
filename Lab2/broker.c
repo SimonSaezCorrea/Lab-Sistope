@@ -103,7 +103,9 @@ int main(int argc, char *argv[]){
     int lineasHijos[numWorker];
     char mensajeLlegada[100];
     printf("...Enviando mensaje de FIN y leyendo pipe\n\n");
+    energia *aux;
     for(i=0;i<numWorker;i++){
+        aux = sum;
         //Envio el mensaje FIN
         char mensajeEnvio[100] = "FIN";
         write(searchDescriptor(fd1, i, numWorker)[1], mensajeEnvio, 100);
@@ -116,12 +118,14 @@ int main(int argc, char *argv[]){
             //printf("Llegó el mensaje: %s\n\n", mensajeLlegada);
             //printf("%s\n", mensajeLlegada);
             //Sumar
-            sumarEnergia(sum, y, numCelda,atof(mensajeLlegada));
-            int energiaDelhijo = searchEnergia(sum, y, numCelda);
+            //sumarEnergia(sum, y, numCelda,atof(mensajeLlegada));
+            aux->energia += atof(mensajeLlegada);
+            int energiaDelhijo = aux->energia;
             if (energiaDelhijo > maximo){
                 maximo = energiaDelhijo;
                 celdaMax = y;
             }
+            aux = aux->next;
             write(searchDescriptor(fd1, i, numWorker)[1], mensajeEnvio, 100);
         }
 
