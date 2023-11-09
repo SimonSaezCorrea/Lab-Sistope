@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
             //Sumar
             //sumarEnergia(sum, y, numCelda,atof(mensajeLlegada));
             aux->energia += atof(mensajeLlegada);
-            int energiaDelhijo = aux->energia;
+            double energiaDelhijo = aux->energia;
             if (energiaDelhijo > maximo){
                 maximo = energiaDelhijo;
                 celdaMax = y;
