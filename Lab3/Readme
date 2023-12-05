@@ -1,0 +1,13 @@
+Comando para probar:
+
+// Para compilar
+
+make
+
+// Para limpiar
+
+make clear
+
+// Para ejecutar
+
+./lab3 -N 35 -H 2 -i test0_35.txt -o out0_35.txt -c 2 -D
