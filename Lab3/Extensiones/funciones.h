@@ -14,7 +14,7 @@ void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpact
 void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpacto, int energiaImpacto);
 
 
-double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadParticulas);
+double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadDeChunks);
 
 
 int porcentajeR3(double energiaPos,double maximo);

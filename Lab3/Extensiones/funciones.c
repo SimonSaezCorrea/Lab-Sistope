@@ -76,7 +76,7 @@ void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpa
 /*
 Entrada: int numeroDeCeldas: La cantidad de celdas.
          int **listaParticulas: Lista que contiene la posición y la energía de impacto.
-         int cantidadParticulas: Es la cantidad de particulas en la lista.
+         int cantidadDeChunks: Es la cantidad de chunks en la lista.
          double *maximo: variable en la que se almacenara la maxima energia.
          int *pos: variable en la que se almacenara la posición de la celda con la maxima energia.
 
@@ -86,10 +86,10 @@ Salida: float: retorna una lista que contiene la energía depositada por los
 Descripción: Permite calcular la enería de impacto en cada posición y como
              se distribuye en el material.
 */
-double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadParticulas){
+double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int cantidadDeChunks){
     double *arregloJoule = calloc(numeroDeCeldas, sizeof(double));
     int i = 0;
-    while(i < cantidadParticulas){
+    while(i < cantidadDeChunks && listaParticulas!=NULL){
         int posicion = listaParticulas[i][0];
         int energia = listaParticulas[i][1];
         if(posicion < numeroDeCeldas){
@@ -100,7 +100,6 @@ double *calculoEnergiaJoule(int numeroDeCeldas, int **listaParticulas, int canti
         calculoIzquierdo(arregloJoule, numeroDeCeldas, posicion, energia);
         i++;
     }
-
     return arregloJoule;
 }
 
