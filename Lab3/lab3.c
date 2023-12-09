@@ -13,22 +13,26 @@
 
 FILE *ARCHIVO;
 
-pthread_mutex_t lock;
+pthread_mutex_t lockLectura;
+pthread_mutex_t lockActualizar;
 
 double *celdasAcumulado;
 int numeroCelda;
 int cantidadDeParticulas;
 int posicionGuardada;
 int numeroChunk;
+double maximo;
+int posMaximo;
 
 //FUNCIONES DE HEBRAS
 
 /*
-Entrada: int numeroChunk: 
+Entrada: int numeroChunk: Numero de lineas que debe leer la hebra del archivo
 
-Salida: int
+Salida: int** : Lista de particulas 
 
-Descripción: 
+Descripción:   A partir de las chunk lineas que lee la hebra del archivo, esta retornará una lista de particulas en la cual contendrá, 
+para cada particula, su impacto y energía.
 */
 int **leerArchivo(int numeroChunk){
     int **particulas = malloc(numeroChunk * sizeof(int *));
@@ -44,11 +48,12 @@ int **leerArchivo(int numeroChunk){
 }
 
 /*
-Entrada: int **particulas: 
+Entrada: int **particulas: Lista que contiene la posición y la energía de impacto
 
-Salida: double
+Salida: double*: Lista de energias depositadas por los impactos calculados por la hebra
 
-Descripción: 
+Descripción: A partir de la lista que contiene posiciones y energias de impacto, la hebra calculara las energuas depositadas por los
+impactos y los retornara como lista.
 */
 double *calculo(int **particulas){
     double *valor = calculoEnergiaJoule(numeroCelda, particulas, numeroChunk);
@@ -56,15 +61,19 @@ double *calculo(int **particulas){
 }
 
 /*
-Entrada: double *valores: 
+Entrada: double *valores: Lista de energias depositadas por los impactos calculados por la hebra
 
 Salida: void: sin salida
 
-Descripción: 
+Descripción: Se actualizan las energias acumuladas en consecuencia a los calculos hechos por la hebra.
 */
 void actualizarDatos(double *valores){
     for(int i = 0; i < numeroCelda; i++){
         celdasAcumulado[i] += valores[i];
+        if (celdasAcumulado[i]>maximo){
+            maximo = celdasAcumulado[i];
+            posMaximo = i;
+        }
     }
 }
 
@@ -77,7 +86,7 @@ Descripción: Función que ejecutan las hebras para su uso
 */
 void *manejoDeHebra(){
     while(ARCHIVO!=NULL){
-        pthread_mutex_lock(&lock);
+        pthread_mutex_lock(&lockLectura);
         int **particulas = NULL;
         if(posicionGuardada<cantidadDeParticulas){
             particulas = leerArchivo(numeroChunk);
@@ -88,7 +97,7 @@ void *manejoDeHebra(){
                 ARCHIVO = NULL;   
             }
         }
-        pthread_mutex_unlock(&lock);
+        pthread_mutex_unlock(&lockLectura);
         
         double *valores = calculo(particulas);
         
@@ -99,9 +108,9 @@ void *manejoDeHebra(){
         free(particulas);
         
         
-        pthread_mutex_lock(&lock);
+        pthread_mutex_lock(&lockActualizar);
         actualizarDatos(valores);
-        pthread_mutex_unlock(&lock);
+        pthread_mutex_unlock(&lockActualizar);
         
     }
 
@@ -204,8 +213,10 @@ int main(int argc, char *argv[]){
     }
     
     celdasAcumulado = calloc(numeroCelda, sizeof(double));
-
-    pthread_mutex_init(&lock, NULL);
+    maximo = 0;
+    posMaximo = 0;
+    pthread_mutex_init(&lockLectura, NULL);
+    pthread_mutex_init(&lockActualizar, NULL);
 
     ARCHIVO = fopen(nombreArchivoEntrada, "r");
 
@@ -233,14 +244,19 @@ int main(int argc, char *argv[]){
         pthread_join(tids[i], NULL);
     }
 
-    pthread_mutex_destroy(&lock);
+    pthread_mutex_destroy(&lockLectura);
+    pthread_mutex_destroy(&lockActualizar);
 
     printf("Celdas acumuladas en el Main\n");
+    printf("Maximo: Celda %d -->%f \n",posMaximo,maximo);
     for(int i = 0; i < numeroCelda; i++){
-        printf("%f ", celdasAcumulado[i]);
+        printf("Celda: %d -->%f \n", i,celdasAcumulado[i]);
     }
     printf("\n");
-
+    if(flag==1){
+        mostrarGrafica(celdasAcumulado,numeroCelda,maximo);
+    }
+    escribirArchivoSalida(nombreArchivoSalida,celdasAcumulado,numeroCelda,maximo,posMaximo);
     free(celdasAcumulado);
     return 0;
 }

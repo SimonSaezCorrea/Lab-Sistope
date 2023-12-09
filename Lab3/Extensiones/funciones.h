@@ -1,9 +1,11 @@
 #ifndef FUNCIONES
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <stdlib.h>
 
+void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo);
 
 double calculoEnergiaAcumulada(double Ei, int Ej, int j, int i, int N);
 

@@ -1,6 +1,50 @@
 #include "funciones.h"
 
 #define MIN_ENERGY 0.001
+#define LOCATE "Ejemplos/"
+
+
+/*
+Entrada: char *nameFile: El nombre del archivo en es que se va a escribir las energias
+         double *energias: La lista que contiene las energias por ser escritas en el archivo
+         int numEnergias: El numero de energias por ser escritas en el archivo
+         double maximo: La maxima energia que va a ser escrita en primer lugar en el archivo
+         int posMaximo: La poscion de la celda con la maxima energia que va a ser escrita en primer lugar en el archivo 
+
+Salida: void: sin salida
+
+Descripción: Se escribe un archivo de salida cuya primera linea es la posición de la celda con la maxima energia acumulada 
+seguida por la misma energia maxima acumulada, a continuacion las siguientes linas son un listado descendente de las posiciones
+de celdas con su respectiva energia acumulada. 
+*/
+void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo){
+     //Establecer lugar en el que se crea/modifica el archivo
+    char direccionReal[100] = "";
+    strcat(direccionReal, LOCATE);
+    strcat(direccionReal, nameFile);
+
+    //Abrir el archivo
+    FILE * file = fopen(direccionReal, "w");
+
+    //Se comprueba si se abrio correctamente el archivo
+    if(file==NULL){
+        printf("Error al abrir el archivo\n");
+        exit(1);
+    }
+    //Se imprime en el archivo la posición de celda con la maxima energia seguida por dicha energia
+    fprintf(file,"%d\t%lf\n",posMaximo,maximo);
+
+
+    //Se usa un ciclo while para imprimir en el archivo las posiciones de celdas en orden con sus respectivas energias
+    int i = 0;
+    while (i < numEnergias){
+        fprintf(file,"%d\t%lf\n",i,energias[i]);
+        i++;
+    }
+    
+    //Se cierra el archivo
+    fclose(file);
+}
 
 /*
 Entrada: int Ei: La energía acumulada.
