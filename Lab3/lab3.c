@@ -34,6 +34,8 @@ Salida: int**: Lista de particulas
 Descripción:   A partir de las chunk lineas que lee la hebra del archivo, esta retornará una lista de particulas en la cual contendrá, 
 para cada particula, su impacto y energía.
 */
+
+/*
 int **leerArchivo(){
     int **particulas = malloc(numeroChunk * sizeof(int *));
     for(int i = 0; i < numeroChunk; i++){
@@ -46,7 +48,7 @@ int **leerArchivo(){
     }
     return particulas;
 }
-
+*/
 /*
 Entrada: int **particulas: Lista que contiene la posición y la energía de impacto
 
@@ -54,19 +56,19 @@ Salida: double*: Lista de energias depositadas por los impactos calculados por l
 
 Descripción: A partir de la lista que contiene posiciones y energias de impacto, la hebra calculara las energuas depositadas por los
 impactos y los retornara como lista.
-*/
+
 double *calculo(int **particulas){
     double *valor = calculoEnergiaJoule(numeroCelda, particulas, numeroChunk);
     return valor;
 }
-
+*/
 /*
 Entrada: double *valores: Lista de energias depositadas por los impactos calculados por la hebra
 
 Salida: void: sin salida
 
 Descripción: Se actualizan las energias acumuladas en consecuencia a los calculos hechos por la hebra.
-*/
+
 void actualizarDatos(double *valores){
     for(int i = 0; i < numeroCelda; i++){
         celdasAcumulado[i] += valores[i];
@@ -76,14 +78,14 @@ void actualizarDatos(double *valores){
         }
     }
 }
-
+*/
 /*
-Entrada: No hay entradas 
+Entrada: void *msgEntrada: Numero de la hebra 
 
 Salida: void: sin salida
 
 Descripción: Función que ejecutan las hebras para su uso
-*/
+
 void *manejoDeHebra(void *msgEntrada){
     char numeroHebra[100];
     strcpy(numeroHebra, (char *)msgEntrada);
@@ -122,7 +124,7 @@ void *manejoDeHebra(void *msgEntrada){
 
    return NULL;
 }
-
+*/
 
 //MAIN
 int main(int argc, char *argv[]){
@@ -218,6 +220,9 @@ int main(int argc, char *argv[]){
         return 1;
     }
     
+
+    
+
     //Generar las celdas acumuladas, resultado final, en 0
     celdasAcumulado = calloc(numeroCelda, sizeof(double));
     

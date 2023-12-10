@@ -4,6 +4,17 @@
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <sys/wait.h>   
+#include <pthread.h>
+
+
+int **leerArchivo();
+
+double *calculo(int **particulas);
+
+void actualizarDatos(double *valores);
+
+void *manejoDeHebra(void *msgEntrada);
 
 void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,double maximo, int posMaximo);
 
