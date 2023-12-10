@@ -11,3 +11,7 @@ make clear
 // Para ejecutar
 
 ./lab3 -N 35 -H 2 -i test0_35.txt -o out0_35.txt -c 2 -D
+./lab3 -N 35 -H 2 -i test1_35.txt -o out1_35.txt -c 2 -D
+./lab3 -N 35 -H 2 -i test2_35.txt -o out2_35.txt -c 2 -D
+./lab3 -N 30000 -H 2 -i test3_30000.txt -o out3_30000.txt -c 2000 -D
+./lab3 -N 1000000 -H 2 -i test4_1M.txt -o out4_1M.txt -c 500 -D

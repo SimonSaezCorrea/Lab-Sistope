@@ -19,22 +19,22 @@ pthread_mutex_t lockActualizar;
 double *celdasAcumulado;
 int numeroCelda;
 int cantidadDeParticulas;
-int posicionGuardada;
+int posicionGuardada = 0;
 int numeroChunk;
-double maximo;
-int posMaximo;
+double maximo = 0;
+int posMaximo = 0;
 
 //FUNCIONES DE HEBRAS
 
 /*
 Entrada: int numeroChunk: Numero de lineas que debe leer la hebra del archivo
 
-Salida: int** : Lista de particulas 
+Salida: int**: Lista de particulas 
 
 Descripción:   A partir de las chunk lineas que lee la hebra del archivo, esta retornará una lista de particulas en la cual contendrá, 
 para cada particula, su impacto y energía.
 */
-int **leerArchivo(int numeroChunk){
+int **leerArchivo(){
     int **particulas = malloc(numeroChunk * sizeof(int *));
     for(int i = 0; i < numeroChunk; i++){
         particulas[i] = calloc(2, sizeof(int ));
@@ -84,12 +84,17 @@ Salida: void: sin salida
 
 Descripción: Función que ejecutan las hebras para su uso
 */
-void *manejoDeHebra(){
+void *manejoDeHebra(void *msgEntrada){
+    char numeroHebra[100];
+    strcpy(numeroHebra, (char *)msgEntrada);
+    free(msgEntrada);
+    printf("numeroHebra = %s\n", numeroHebra);
     while(ARCHIVO!=NULL){
         pthread_mutex_lock(&lockLectura);
         int **particulas = NULL;
         if(posicionGuardada<cantidadDeParticulas){
-            particulas = leerArchivo(numeroChunk);
+            printf("Hebra: %s   Leyendo archivo\n", numeroHebra);
+            particulas = leerArchivo();
         }
         else{
             if(ARCHIVO!=NULL){
@@ -99,6 +104,7 @@ void *manejoDeHebra(){
         }
         pthread_mutex_unlock(&lockLectura);
         
+        printf("Hebra: %s   Generando datos\n", numeroHebra);
         double *valores = calculo(particulas);
         
         
@@ -109,9 +115,9 @@ void *manejoDeHebra(){
         
         
         pthread_mutex_lock(&lockActualizar);
+        printf("Hebra: %s   Actualizando datos\n", numeroHebra);
         actualizarDatos(valores);
         pthread_mutex_unlock(&lockActualizar);
-        
     }
 
    return NULL;
@@ -212,12 +218,15 @@ int main(int argc, char *argv[]){
         return 1;
     }
     
+    //Generar las celdas acumuladas, resultado final, en 0
     celdasAcumulado = calloc(numeroCelda, sizeof(double));
-    maximo = 0;
-    posMaximo = 0;
+    
+    //Genera los lockkk
     pthread_mutex_init(&lockLectura, NULL);
     pthread_mutex_init(&lockActualizar, NULL);
 
+    //Abre un archivo
+    printf("Lee el archivo\n");
     ARCHIVO = fopen(nombreArchivoEntrada, "r");
 
     if(ARCHIVO==NULL){
@@ -231,32 +240,50 @@ int main(int argc, char *argv[]){
             return 1;
         }
     }
-    posicionGuardada = 0;
 
+    // Lee la primera linea
     fscanf(ARCHIVO, "%d\n", &cantidadDeParticulas);
     
+    printf("Trabajo de hebras\n");
+    //Genera una lista de hebras
     pthread_t tids[numeroHebras];
 
+    //Genera las hebras para enviarlas a una funcion
     for(int i=0;i<numeroHebras;i++){
-        pthread_create(&tids[i], NULL, manejoDeHebra, NULL);
+        char *valor = malloc(100*sizeof(char));
+        sprintf(valor, "%d", i);
+        printf("valor = %s\n", valor);
+        pthread_create(&tids[i], NULL, manejoDeHebra, (void *) valor);
     }
     for(int i=0;i<numeroHebras;i++){
         pthread_join(tids[i], NULL);
     }
 
+    //Destruye los lock
     pthread_mutex_destroy(&lockLectura);
     pthread_mutex_destroy(&lockActualizar);
 
+    /*
     printf("Celdas acumuladas en el Main\n");
     printf("Maximo: Celda %d -->%f \n",posMaximo,maximo);
     for(int i = 0; i < numeroCelda; i++){
         printf("Celda: %d -->%f \n", i,celdasAcumulado[i]);
     }
     printf("\n");
+    */
+
+    //Escribe en el archivo de salida
+    printf("Escritura\n");
+    escribirArchivoSalida(nombreArchivoSalida,celdasAcumulado,numeroCelda,maximo,posMaximo);
+
+    // Mostrar  gráfica
     if(flag==1){
+        printf("Mostrar gráfica\n");
         mostrarGrafica(celdasAcumulado,numeroCelda,maximo);
     }
-    escribirArchivoSalida(nombreArchivoSalida,celdasAcumulado,numeroCelda,maximo,posMaximo);
-    free(celdasAcumulado);
+    
+    printf("Liberar\n");
+    //Libera memoria de lo generado
+    free(celdasAcumulado); 
     return 0;
 }

@@ -47,13 +47,11 @@ void escribirArchivoSalida(char *nameFile,double *energias, int numEnergias,doub
 }
 
 /*
-Entrada: int Ei: La energía acumulada.
+Entrada: double Ei: La energía acumulada.
          int Ej: Energía potencial que trae.
          int j: Posición de impacto.
          int i: La posición del arreglo.
          int N: Numero de celdas.
-         double *maximo: variable en la que se almacenara la maxima energia.
-         int *pos: variable en la que se almacenara la posición de la celda con la maxima energia.
 
 Salida: int: Valor resultante de la Energía acumulada, osea el Ei.
 
@@ -74,12 +72,10 @@ double calculoEnergiaAcumulada(double Ei, int Ej, int j, int i, int N){
 }
 
 /*
-Entrada: float *arregloJoule: El arreglo que contiene la energía.
+Entrada: double *arregloJoule: El arreglo que contiene la energía.
          int numeroDeCeldas: La cantidad de celdas.
          int posicionImpacto: La posición de impacto.
          int energiaImpacto: La energía de impacto.
-         double *maximo: variable en la que se almacenara la maxima energia.
-         int *pos: variable en la que se almacenara la posición de la celda con la maxima energia.
 
 Salida: void: nada.
 
@@ -95,12 +91,10 @@ void calculoDerecho(double *arregloJoule, int numeroDeCeldas, int posicionImpact
 }
 
 /*
-Entrada: float *arregloJoule: El arreglo que contiene la energía.
+Entrada: double *arregloJoule: El arreglo que contiene la energía.
          int numeroDeCeldas: La cantidad de celdas.
          int posicionImpacto: La posición de impacto.
          int energiaImpacto: La energía de impacto.
-         double *maximo: variable en la que se almacenara la maxima energia.
-         int *pos: variable en la que se almacenara la posición de la celda con la maxima energia.
 
 Salida: void: nada.
 
@@ -121,10 +115,8 @@ void calculoIzquierdo(double *arregloJoule, int numeroDeCeldas, int posicionImpa
 Entrada: int numeroDeCeldas: La cantidad de celdas.
          int **listaParticulas: Lista que contiene la posición y la energía de impacto.
          int cantidadDeChunks: Es la cantidad de chunks en la lista.
-         double *maximo: variable en la que se almacenara la maxima energia.
-         int *pos: variable en la que se almacenara la posición de la celda con la maxima energia.
 
-Salida: float: retorna una lista que contiene la energía depositada por los
+Salida: double*: retorna una lista que contiene la energía depositada por los
         impactos.
 
 Descripción: Permite calcular la enería de impacto en cada posición y como
